@@ -1,0 +1,1905 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>ورشة هادي ناصر آل مستنير للسيارات</title>
+<meta name="theme-color" content="#16a34a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="application-name" content="ورشة هادي">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" id="manifest-link">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      fontFamily: { cairo: ['Cairo','sans-serif'] },
+      colors: { brand: { 50:'#f0fdf4',100:'#dcfce7',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#166534',900:'#14532d' } }
+    }}
+  };
+  if (localStorage.getItem('theme') === 'dark' ||
+     (!('theme' in localStorage) && matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+  (function() {
+    const lang = localStorage.getItem('lang') || 'ar';
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  })();
+</script>
+<style>
+  body { font-family:'Cairo',sans-serif; -webkit-tap-highlight-color: transparent; }
+  .no-scrollbar::-webkit-scrollbar { display:none; }
+  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+  @media print { .no-print{display:none!important;} body{background:#fff!important;color:#000!important;} }
+  .fade-in { animation: fadeIn .2s ease-in; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px);} to{opacity:1;transform:none;} }
+  button, select, input { min-height: 36px; }
+  @media (max-width: 640px) {
+    button, select, input { min-height: 40px; }
+    table { font-size: 11px; }
+    th, td { padding: 8px 6px !important; }
+  }
+  .sidebar-link { transition: all 0.2s; }
+  .sidebar-link.active { background: #16a34a !important; color: white !important; }
+  .sidebar-link.active svg { color: white !important; }
+  @media (min-width: 1024px) {
+    #sidebar { transform: translateX(0) !important; }
+    html[dir="rtl"] #main-content { margin-right: 260px; margin-left: 0; }
+    html[dir="ltr"] #main-content { margin-left: 260px; margin-right: 0; }
+  }
+  @media (display-mode: standalone) {
+    body { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    #install-app-banner { display: none !important; }
+  }
+  #bottom-nav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: white; border-top: 1px solid #e2e8f0; z-index: 35;
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -4px 12px rgba(0,0,0,.06);
+  }
+  html.dark #bottom-nav { background: #1e293b; border-color: #334155; }
+  @media (max-width: 1023px) { #bottom-nav { display: flex; } #main-content { padding-bottom: 76px; } }
+  .bottom-nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; padding: 8px 2px; gap: 2px;
+    font-size: 10px; font-weight: 700; color: #64748b;
+    transition: all .2s; text-decoration: none; min-height: 56px;
+  }
+  .bottom-nav-item.active { color: #16a34a; }
+  .bottom-nav-item.active svg { transform: translateY(-1px) scale(1.1); }
+  html.dark .bottom-nav-item { color: #94a3b8; }
+  html.dark .bottom-nav-item.active { color: #22c55e; }
+  #install-app-banner {
+    position: fixed; bottom: 80px; left: 12px; right: 12px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white; padding: 12px 16px; border-radius: 16px;
+    z-index: 45; box-shadow: 0 10px 30px rgba(22,163,74,.4);
+    display: none; align-items: center; gap: 12px;
+    animation: slideUp .4s ease;
+  }
+  #install-app-banner.show { display: flex; }
+  @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+  #offline-banner {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: #f59e0b; color: white; text-align: center;
+    padding: 6px; font-size: 12px; font-weight: 700;
+    z-index: 55; display: none;
+  }
+  #offline-banner.show { display: block; }
+  #fab-menu {
+    position: fixed; bottom: 76px; left: 16px;
+    display: none; flex-direction: column; gap: 10px; z-index: 34;
+  }
+  @media (max-width: 1023px) { #fab-menu { display: flex; } }
+  .fab-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    border: none; cursor: pointer; transition: all .2s;
+    transform: scale(0); animation: popIn .25s forwards;
+  }
+  .fab-btn.primary { width: 60px; height: 60px; background: #16a34a; animation-delay: .05s; }
+  .fab-btn.secondary { background: #2563eb; animation-delay: .1s; }
+  .fab-btn.tertiary { background: #f59e0b; animation-delay: .15s; }
+  .fab-btn:active { transform: scale(.9) !important; }
+  @keyframes popIn { to { transform: scale(1); } }
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-200">
+
+<!-- ============ LOGIN ============ -->
+<div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/95 backdrop-blur-md p-4">
+  <div class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-100 dark:border-slate-700">
+    <div class="text-center mb-6">
+      <div class="w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg overflow-hidden border-2 border-brand-500">
+        <img src="logo.png" alt="شعار" class="w-full h-full object-contain p-1" onerror="this.parentElement.innerHTML='<svg class=\'w-14 h-14 text-brand-600\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5\'/></svg>'">
+      </div>
+      <h1 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white" data-i18n="app_title">ورشة هادي ناصر آل مستنير للسيارات</h1>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1" data-i18n="app_subtitle">نظام الإدارة المالية والاستثمارات</p>
+    </div>
+    <form id="login-form" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="select_user">اختر المستخدم</label>
+        <select id="login-user-select" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none"></select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" data-i18n="pin_code">رمز الدخول (PIN)</label>
+        <input type="password" id="login-pin" maxlength="6" inputmode="numeric" class="w-full px-4 py-2.5 text-center text-xl tracking-widest rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white focus:ring-2 focus:ring-brand-500 outline-none" placeholder="••••••" required>
+      </div>
+      <div id="login-error" class="hidden text-rose-500 text-xs text-center font-medium" data-i18n="wrong_pin">الرمز المدخل غير صحيح</div>
+      <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-lg shadow-brand-600/30 transition" data-i18n="login_btn">تسجيل الدخول</button>
+      <div class="text-center">
+        <button type="button" onclick="toggleLanguage()" class="text-xs text-slate-500 hover:text-brand-600 underline">
+          <span data-i18n="lang_switch">English</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="main-app" class="hidden min-h-screen">
+  <aside id="sidebar" class="fixed top-0 bottom-0 w-64 bg-white dark:bg-slate-800 border-l border-slate-200 dark:border-slate-700 z-40 overflow-y-auto no-print transition-transform duration-300" style="right:0">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center gap-3">
+      <div class="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-md flex-shrink-0 overflow-hidden border border-brand-200">
+        <img src="logo.png" alt="شعار" class="w-full h-full object-contain p-0.5" onerror="this.parentElement.innerHTML='<svg class=\'w-8 h-8 text-brand-600\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5\'/></svg>'">
+      </div>
+      <div class="min-w-0 flex-1">
+        <h2 class="font-bold text-slate-900 dark:text-white text-xs leading-tight" data-i18n="app_title">ورشة هادي ناصر آل مستنير للسيارات</h2>
+        <p class="text-[10px] text-slate-500 mt-0.5" data-i18n="app_subtitle_short">نظام الإدارة الشاملة</p>
+      </div>
+      <button onclick="closeSidebar()" class="lg:hidden text-slate-400 hover:text-slate-600 p-1">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="p-3 border-b border-slate-200 dark:border-slate-700">
+      <div class="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-2.5 flex items-center gap-2">
+        <div class="w-9 h-9 bg-brand-100 dark:bg-brand-900/50 rounded-full flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <div id="current-user-name" class="text-xs font-bold truncate">المستخدم</div>
+          <div id="current-user-role" class="text-[10px] text-slate-500 truncate"></div>
+        </div>
+      </div>
+    </div>
+    <nav class="p-3 space-y-1">
+      <div class="text-[10px] font-bold text-slate-400 px-3 py-2" data-i18n="nav_main">الرئيسية</div>
+      <a href="#" onclick="switchPage('dashboard'); return false;" id="nav-dashboard" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        <span data-i18n="nav_dashboard">لوحة التحكم</span>
+      </a>
+      <div class="text-[10px] font-bold text-slate-400 px-3 py-2 mt-2" data-i18n="nav_financial">المالية</div>
+      <a href="#" onclick="switchPage('expenses'); return false;" id="nav-expenses" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+        <span data-i18n="tab_expenses">المصروفات</span>
+      </a>
+      <a href="#" onclick="switchPage('deposits'); return false;" id="nav-deposits" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <span data-i18n="tab_deposits">الإيداعات</span>
+      </a>
+      <a href="#" onclick="switchPage('rents'); return false;" id="nav-rents" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        <span data-i18n="tab_rents">الإيجارات</span>
+      </a>
+      <a href="#" onclick="switchPage('fines'); return false;" id="nav-fines" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <span data-i18n="tab_fines">الغرامات</span>
+      </a>
+      <div class="text-[10px] font-bold text-slate-400 px-3 py-2 mt-2" data-i18n="nav_operations">العمليات</div>
+      <a href="#" onclick="switchPage('attendance'); return false;" id="nav-attendance" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span data-i18n="tab_attendance">الحضور والانصراف</span>
+      </a>
+      <a href="#" onclick="switchPage('workshops'); return false;" id="nav-workshops" class="sidebar-link hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg>
+        <span data-i18n="manage_workshops">إدارة الأقسام</span>
+      </a>
+      <a href="#" onclick="switchPage('users'); return false;" id="nav-users" class="sidebar-link hidden flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <span data-i18n="users">المستخدمين</span>
+      </a>
+      <div class="text-[10px] font-bold text-slate-400 px-3 py-2 mt-2" data-i18n="nav_settings">الإعدادات</div>
+      <a href="#" onclick="switchPage('settings'); return false;" id="nav-settings" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span data-i18n="settings">الإعدادات</span>
+      </a>
+      <button onclick="toggleLanguage()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 mt-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+        <span data-i18n="lang_switch">English</span>
+      </button>
+      <button onclick="toggleDarkMode()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <span data-i18n="dark_mode">الوضع الليلي</span>
+      </button>
+      <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/30">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+        <span data-i18n="logout">تسجيل الخروج</span>
+      </button>
+    </nav>
+  </aside>
+
+  <div id="main-content" class="min-h-screen flex flex-col">
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-30 no-print">
+      <div class="px-3 sm:px-6 py-2 flex items-center justify-between">
+        <button onclick="openSidebar()" class="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <h1 id="page-title" class="font-bold text-slate-900 dark:text-white text-base">لوحة التحكم</h1>
+        <button onclick="toggleLanguage()" class="p-2 text-slate-500 hover:text-brand-600 rounded-lg" title="Language">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div id="workshop-tabs" class="flex overflow-x-auto no-scrollbar gap-2 pb-2 hidden"></div>
+
+      <!-- Dashboard -->
+      <div id="page-dashboard" class="space-y-4 sm:space-y-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
+          <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <div class="min-w-0"><span class="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-1 truncate" data-i18n="stat_expenses">إجمالي المصروفات</span><div id="stat-total-expenses" class="text-base sm:text-2xl font-black text-rose-600 truncate">0</div></div>
+            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center flex-shrink-0 ml-1"><svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <div class="min-w-0"><span class="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-1 truncate" data-i18n="stat_deposits">إجمالي الإيداعات</span><div id="stat-total-deposits" class="text-base sm:text-2xl font-black text-emerald-600 truncate">0</div></div>
+            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center flex-shrink-0 ml-1"><svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <div class="min-w-0"><span class="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-1 truncate" data-i18n="stat_rents">الإيجارات المسددة</span><div id="stat-rent-collected" class="text-base sm:text-2xl font-black text-blue-600 truncate">0</div></div>
+            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 ml-1"><svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+            <div class="min-w-0"><span class="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-1 truncate" data-i18n="stat_fines">غرامات المنشأة</span><div id="stat-total-fines" class="text-base sm:text-2xl font-black text-orange-600 truncate">0</div></div>
+            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 ml-1"><svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+          </div>
+          <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between col-span-2 md:col-span-1">
+            <div class="min-w-0"><span class="text-[10px] sm:text-xs font-semibold text-slate-500 block mb-1 truncate" data-i18n="stat_net">الرصيد الصافي</span><div id="stat-net-balance" class="text-base sm:text-2xl font-black text-slate-900 dark:text-white truncate">0</div></div>
+            <div class="w-8 h-8 sm:w-12 sm:h-12 bg-slate-100 text-slate-700 rounded-xl flex items-center justify-center flex-shrink-0 ml-1"><svg class="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg></div>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 p-3 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 class="text-xs sm:text-sm font-bold text-slate-700 mb-3" data-i18n="chart_title">نظرة عامة على الحركة المالية</h3>
+          <div class="h-56 sm:h-64 w-full"><canvas id="financialChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Financial -->
+      <div id="page-expenses" class="hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+          <div class="border-b border-slate-200 dark:border-slate-700 px-3 sm:px-6 py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <h2 id="financial-page-title" class="font-bold text-slate-900 dark:text-white text-sm">المصروفات</h2>
+            <div class="flex items-center gap-2 flex-wrap">
+              <div class="relative flex-1 min-w-[140px]">
+                <input type="text" id="search-input" oninput="renderTables()" placeholder="بحث..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 outline-none" data-i18n-placeholder="search_placeholder">
+                <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </div>
+              <input type="date" id="filter-date-from" onchange="renderTables()" class="px-2 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs w-32">
+              <input type="date" id="filter-date-to" onchange="renderTables()" class="px-2 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs w-32">
+              <button onclick="clearFilters()" class="px-2 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold" data-i18n="clear">مسح</button>
+              <button onclick="openAddModal()" class="px-3 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs sm:text-sm font-bold shadow-md whitespace-nowrap">+ <span data-i18n="add">إضافة</span></button>
+              <button onclick="exportToCSV()" class="px-2 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold">CSV</button>
+              <button onclick="exportToPDF()" class="px-2 py-2 bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-xl text-xs font-bold">PDF</button>
+            </div>
+          </div>
+          <div class="p-2 sm:p-6 overflow-x-auto">
+            <div id="view-expenses"><table class="w-full text-right border-collapse min-w-[600px]"><thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs"><th class="p-2 sm:p-3 font-semibold rounded-r-xl" data-i18n="col_worker">اسم العامل</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_iqama">رقم الإقامة</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_service">نوع المصروف</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_amount">المبلغ</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_date">التاريخ</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_notes">ملاحظات</th><th class="p-2 sm:p-3 font-semibold rounded-l-xl" data-i18n="col_actions">إجراءات</th></tr></thead><tbody id="expenses-table-body" class="text-sm divide-y divide-slate-100 dark:divide-slate-700/50"></tbody></table></div>
+            <div id="view-deposits" class="hidden"><table class="w-full text-right border-collapse min-w-[600px]"><thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs"><th class="p-2 sm:p-3 font-semibold rounded-r-xl" data-i18n="col_voucher">نوع السند</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_payee">المستفيد</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_amount">المبلغ</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_date">التاريخ</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_notes">ملاحظات</th><th class="p-2 sm:p-3 font-semibold rounded-l-xl" data-i18n="col_actions">إجراءات</th></tr></thead><tbody id="deposits-table-body" class="text-sm divide-y divide-slate-100 dark:divide-slate-700/50"></tbody></table></div>
+            <div id="view-rents" class="hidden">
+              <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+                <div class="p-2 sm:p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl text-center border border-slate-200 dark:border-slate-700"><div class="text-[10px] font-bold text-slate-500 mb-1" data-i18n="rents_due">إجمالي المطلوب</div><div id="rents-total-due" class="text-xs sm:text-sm font-black">0</div></div>
+                <div class="p-2 sm:p-3 bg-emerald-50 rounded-xl text-center border border-emerald-200"><div class="text-[10px] font-bold text-emerald-600 mb-1" data-i18n="rents_paid">المسدد</div><div id="rents-total-paid" class="text-xs sm:text-sm font-black text-emerald-600">0</div></div>
+                <div class="p-2 sm:p-3 bg-rose-50 rounded-xl text-center border border-rose-200"><div class="text-[10px] font-bold text-rose-600 mb-1" data-i18n="rents_remaining">المتأخرات</div><div id="rents-total-remaining" class="text-xs sm:text-sm font-black text-rose-600">0</div></div>
+              </div>
+              <table class="w-full text-right border-collapse min-w-[700px]"><thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs"><th class="p-2 sm:p-3 font-semibold rounded-r-xl" data-i18n="col_month">الشهر</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_year">السنة</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_due">المطلوب</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_paid">المسدد</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_remaining">المتبقي</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_pay_date">تاريخ السداد</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_recipient">المستلم</th><th class="p-2 sm:p-3 font-semibold" data-i18n="col_payment_type">نوع الدفع</th><th class="p-2 sm:p-3 font-semibold rounded-l-xl" data-i18n="col_actions">إجراءات</th></tr></thead><tbody id="rents-table-body" class="text-sm divide-y divide-slate-100 dark:divide-slate-700/50"></tbody></table>
+            </div>
+            <div id="view-fines" class="hidden">
+              <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
+                <div class="p-2 sm:p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl text-center border border-slate-200 dark:border-slate-700"><div class="text-[10px] font-bold text-slate-500 mb-1" data-i18n="fines_total">إجمالي الغرامات</div><div id="fines-total-all" class="text-xs sm:text-sm font-black">0</div></div>
+                <div class="p-2 sm:p-3 bg-emerald-50 rounded-xl text-center border border-emerald-200"><div class="text-[10px] font-bold text-emerald-600 mb-1" data-i18n="fines_paid">المسددة</div><div id="fines-total-paid" class="text-xs sm:text-sm font-black text-emerald-600">0</div></div>
+                <div class="p-2 sm:p-3 bg-orange-50 rounded-xl text-center border border-orange-200"><div class="text-[10px] font-bold text-orange-600 mb-1" data-i18n="fines_unpaid">غير المسددة</div><div id="fines-total-unpaid" class="text-xs sm:text-sm font-black text-orange-600">0</div></div>
+              </div>
+              <table class="w-full text-right border-collapse min-w-[700px]">
+                <thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-xs">
+                  <th class="p-2 sm:p-3 font-semibold rounded-r-xl" data-i18n="col_fine_type">نوع الغرامة</th>
+                  <th class="p-2 sm:p-3 font-semibold" data-i18n="col_violation">رقم المخالفة</th>
+                  <th class="p-2 sm:p-3 font-semibold" data-i18n="col_authority">الجهة</th>
+                  <th class="p-2 sm:p-3 font-semibold" data-i18n="col_amount">المبلغ</th>
+                  <th class="p-2 sm:p-3 font-semibold" data-i18n="col_date">التاريخ</th>
+                  <th class="p-2 sm:p-3 font-semibold" data-i18n="col_status">الحالة</th>
+                  <th class="p-2 sm:p-3 font-semibold rounded-l-xl" data-i18n="col_actions">إجراءات</th>
+                </tr></thead>
+                <tbody id="fines-table-body" class="text-sm divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Attendance -->
+      <div id="page-attendance" class="hidden space-y-4">
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="quickCheckIn()" class="py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+            <span data-i18n="quick_checkin">حضور سريع</span>
+          </button>
+          <button onclick="quickCheckOut()" class="py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-md transition text-sm flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+            <span data-i18n="quick_checkout">انصراف</span>
+          </button>
+        </div>
+        <div class="bg-gradient-to-l from-brand-600 to-brand-700 text-white rounded-2xl p-4 shadow-lg flex items-center gap-3">
+          <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <img src="logo.png" alt="شعار" class="w-full h-full object-contain p-1" onerror="this.style.display='none'">
+          </div>
+          <div class="min-w-0 flex-1">
+            <h2 class="font-bold text-sm">ورشة هادي ناصر آل مستنير للسيارات</h2>
+            <p class="text-[10px] opacity-90" data-i18n="attendance_subtitle">سجل الحضور والانصراف</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="p-3 bg-emerald-50 rounded-xl text-center border border-emerald-200"><div class="text-[10px] font-bold text-emerald-600 mb-1" data-i18n="attendance_present">حاضر</div><div id="attendance-today-present" class="text-base font-black text-emerald-600">0</div></div>
+          <div class="p-3 bg-rose-50 rounded-xl text-center border border-rose-200"><div class="text-[10px] font-bold text-rose-600 mb-1" data-i18n="attendance_absent">غائب</div><div id="attendance-today-absent" class="text-base font-black text-rose-600">0</div></div>
+          <div class="p-3 bg-blue-50 rounded-xl text-center border border-blue-200"><div class="text-[10px] font-bold text-blue-600 mb-1" data-i18n="attendance_hours">الساعات</div><div id="attendance-today-hours" class="text-base font-black text-blue-600">0</div></div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-3 space-y-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <input type="text" id="attendance-worker-filter" oninput="renderAttendanceList()" placeholder="فلترة باسم الموظف..." class="flex-1 min-w-[160px] px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+            <input type="date" id="attendance-date-from" onchange="renderAttendanceList()" class="px-2 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none w-32" title="من تاريخ">
+            <input type="date" id="attendance-date-to" onchange="renderAttendanceList()" class="px-2 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none w-32" title="إلى تاريخ">
+            <button onclick="clearAttendanceFilters()" class="px-2 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold" data-i18n="clear">مسح</button>
+          </div>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-3 flex flex-wrap items-center gap-2">
+          <button onclick="toggleSelectAll()" id="select-all-btn" class="px-3 py-2 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span data-i18n="select_all">تحديد الكل</span>
+          </button>
+          <button onclick="clearSelection()" class="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span data-i18n="clear_selection">إلغاء التحديد</span>
+          </button>
+          <span id="selection-count" class="text-xs text-slate-500 mr-auto"></span>
+          <button onclick="printSelectedAttendance()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2z"/></svg>
+            <span data-i18n="print_selected">طباعة المحدد</span>
+          </button>
+          <button onclick="printAllAttendance()" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2z"/></svg>
+            <span data-i18n="print_all">طباعة الكل</span>
+          </button>
+          <button onclick="addAttendanceRecord()" class="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold whitespace-nowrap">+ <span data-i18n="add">إضافة</span></button>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-3">
+          <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+            <table class="w-full text-right border-collapse min-w-[700px]">
+              <thead><tr class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 text-[10px]">
+                <th class="p-2 font-semibold w-8"><input type="checkbox" id="select-all-checkbox" onchange="toggleSelectAll()" class="w-4 h-4 accent-brand-600"></th>
+                <th class="p-2 font-semibold" data-i18n="col_worker">اسم العامل</th>
+                <th class="p-2 font-semibold" data-i18n="col_civil_id">السجل المدني</th>
+                <th class="p-2 font-semibold" data-i18n="col_date">التاريخ</th>
+                <th class="p-2 font-semibold" data-i18n="col_check_in">حضور</th>
+                <th class="p-2 font-semibold" data-i18n="col_check_out">انصراف</th>
+                <th class="p-2 font-semibold" data-i18n="col_hours">ساعات</th>
+                <th class="p-2 font-semibold" data-i18n="col_attendance_status">الحالة</th>
+                <th class="p-2 font-semibold" data-i18n="col_actions">إجراءات</th>
+              </tr></thead>
+              <tbody id="attendance-table-body" class="text-xs divide-y divide-slate-100 dark:divide-slate-700/50"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Workshops Management -->
+      <div id="page-workshops" class="hidden space-y-4">
+        <div class="bg-gradient-to-l from-indigo-600 to-indigo-700 text-white rounded-2xl p-4 shadow-lg flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg>
+            </div>
+            <div>
+              <h2 class="font-bold text-sm" data-i18n="manage_workshops">إدارة الأقسام</h2>
+              <p class="text-[10px] opacity-90" id="workshops-count-label"></p>
+            </div>
+          </div>
+          <button onclick="openWorkshopModal()" class="px-3 py-2 bg-white text-indigo-700 rounded-xl text-xs font-bold shadow-md whitespace-nowrap flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            <span data-i18n="add">إضافة</span>
+          </button>
+        </div>
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-3">
+          <div class="relative mb-3">
+            <input type="text" id="workshop-search" oninput="renderWorkshopsList()" placeholder="بحث في الأقسام..." class="w-full pl-8 pr-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs focus:ring-2 focus:ring-brand-500 outline-none" data-i18n-placeholder="search_placeholder">
+            <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <div id="workshops-list-container" class="space-y-2"></div>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div id="page-users" class="hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4 sm:p-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-slate-900 dark:text-white text-sm" data-i18n="manage_users">إدارة المستخدمين</h2>
+            <p id="users-count-label" class="text-[10px] text-slate-500"></p>
+          </div>
+          <div id="users-list-container" class="space-y-2"></div>
+          <hr class="border-slate-200 dark:border-slate-700">
+          <form id="add-user-form" onsubmit="handleAddUser(event)" class="space-y-2 bg-slate-50 dark:bg-slate-700/50 p-3 rounded-xl">
+            <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300" data-i18n="add_new_user">إضافة مستخدم جديد</h4>
+            <input type="text" id="new-user-name" placeholder="الاسم" required class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white outline-none">
+            <input type="password" id="new-user-pin" placeholder="رمز الدخول (PIN)" required minlength="4" maxlength="6" pattern="\d{4,6}" inputmode="numeric" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white outline-none">
+            <select id="new-user-role" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white outline-none"><option value="accountant" data-i18n="accountant_role">محاسب</option><option value="owner" data-i18n="owner_role">مالك</option></select>
+            <button type="submit" class="w-full py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold rounded-lg transition" data-i18n="add">إضافة</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div id="page-settings" class="hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-4 sm:p-6 space-y-3">
+          <h2 class="font-bold text-slate-900 dark:text-white text-sm mb-3" data-i18n="settings">الإعدادات والنسخ الاحتياطي</h2>
+          <button onclick="exportJSONBackup()" class="w-full py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-xl text-sm" data-i18n="export_backup">تصدير نسخة احتياطية</button>
+          <label class="w-full py-3 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold rounded-xl flex items-center justify-center gap-2 cursor-pointer text-sm"><span data-i18n="import_backup">استعادة نسخة احتياطية</span><input type="file" accept=".json" onchange="importJSONBackup(event)" class="hidden"></label>
+          <button onclick="openCompare()" class="w-full py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-bold rounded-xl text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span data-i18n="compare_btn">مقارنة ورشتين</span>
+          </button>
+          <button onclick="exportAllWorkshopsPDF()" class="w-full py-3 bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 font-bold rounded-xl text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span data-i18n="export_all_pdf">تصدير PDF شامل</span>
+          </button>
+          <button onclick="openDashboardFull()" class="w-full py-3 bg-brand-50 dark:bg-brand-900/30 text-brand-700 dark:text-brand-300 font-bold rounded-xl text-sm flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            <span data-i18n="owner_dashboard">لوحة تحكم المالك</span>
+          </button>
+          <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+            <button onclick="resetSystemData()" class="w-full py-2.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 font-bold rounded-xl text-sm" data-i18n="reset_data">إعادة ضبط وحذف جميع البيانات</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="sidebar-overlay" class="fixed inset-0 bg-slate-900/50 z-30 hidden lg:hidden no-print" onclick="closeSidebar()"></div>
+
+<!-- Data Modal -->
+<div id="data-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-3">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-700 fade-in flex flex-col max-h-[95vh]">
+    <div class="px-4 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+      <h3 class="font-bold text-slate-900 dark:text-white text-sm" id="modal-title">إضافة سجل جديد</h3>
+      <button onclick="closeDataModal()" class="text-slate-400 hover:text-slate-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <form id="data-form" onsubmit="handleFormSubmit(event)" class="p-4 sm:p-6 space-y-3 overflow-y-auto">
+      <input type="hidden" id="entry-id">
+      <div id="form-fields-container" class="space-y-3"></div>
+      <div class="pt-3 flex gap-2">
+        <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md transition text-sm" data-i18n="save">حفظ</button>
+        <button type="button" onclick="closeDataModal()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl transition text-sm" data-i18n="cancel">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Workshop Modal -->
+<div id="workshop-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-3">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-200 dark:border-slate-700 fade-in">
+    <div class="px-4 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+      <h3 class="font-bold text-slate-900 dark:text-white text-sm" id="workshop-modal-title">إضافة قسم جديد</h3>
+      <button onclick="closeWorkshopModal()" class="text-slate-400 hover:text-slate-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <form id="workshop-form" onsubmit="handleWorkshopSubmit(event)" class="p-4 sm:p-6 space-y-3">
+      <input type="hidden" id="workshop-edit-id">
+      <div>
+        <label class="block text-xs font-semibold mb-1">الاسم بالعربية <span class="text-rose-500">*</span></label>
+        <input type="text" id="workshop-name-ar" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-brand-500">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold mb-1">الاسم بالإنجليزية <span class="text-slate-400">(اختياري)</span></label>
+        <input type="text" id="workshop-name-en" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-brand-500">
+      </div>
+      <div class="text-[11px] text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/40 p-2 rounded-lg" id="workshop-modal-hint">
+        💡 سيظهر هذا القسم في التبويبات أعلى صفحة المالية وصفحة المقارنة.
+      </div>
+      <div class="pt-3 flex gap-2">
+        <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl shadow-md text-sm" data-i18n="save">حفظ</button>
+        <button type="button" onclick="closeWorkshopModal()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm" data-i18n="cancel">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Print Voucher -->
+<div id="print-voucher-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-3">
+  <div class="bg-white text-slate-900 p-5 sm:p-8 rounded-2xl max-w-xl w-full space-y-4 shadow-2xl fade-in max-h-[95vh] overflow-y-auto">
+    <div class="text-center border-b border-slate-200 pb-3">
+      <div class="w-16 h-16 mx-auto mb-2 bg-white rounded-xl border-2 border-brand-500 overflow-hidden flex items-center justify-center">
+        <img src="logo.png" alt="شعار" class="w-full h-full object-contain p-1" onerror="this.style.display='none'">
+      </div>
+      <h2 class="text-base sm:text-xl font-bold">ورشة هادي ناصر آل مستنير للسيارات</h2>
+      <p class="text-xs text-slate-500 mt-1" id="print-voucher-type">سند مالي</p>
+    </div>
+    <div class="space-y-2 text-xs sm:text-sm" id="print-voucher-content"></div>
+    <div class="flex flex-col sm:flex-row justify-between gap-2 pt-4 text-xs font-bold text-slate-600"><div>توقيع المستلم: __________</div><div>توقيع المحاسب: __________</div><div>اعتماد المالك: __________</div></div>
+    <div class="flex gap-2 no-print pt-2"><button onclick="window.print()" class="flex-1 py-2 bg-brand-600 text-white font-bold rounded-xl text-sm">طباعة</button><button onclick="closePrintVoucherModal()" class="px-4 py-2 bg-slate-200 text-slate-800 font-bold rounded-xl text-sm">إغلاق</button></div>
+  </div>
+</div>
+
+<!-- Owner Dashboard -->
+<div id="dashboard-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-2 sm:p-4">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-5xl max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700 fade-in flex flex-col">
+    <div class="px-4 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+      <h3 class="font-bold text-slate-900 dark:text-white text-sm" data-i18n="owner_dashboard">لوحة تحكم المالك</h3>
+      <button onclick="closeDashboard()" class="text-slate-400 hover:text-slate-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="p-3 sm:p-6 overflow-y-auto space-y-4">
+      <div class="flex flex-wrap items-center gap-2 p-2 bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700">
+        <span class="text-xs font-bold text-slate-600 dark:text-slate-300" data-i18n="period">الفترة:</span>
+        <button onclick="setDashPeriod('all')" data-period="all" class="dash-period-btn px-2 py-1 rounded-lg text-xs font-bold transition" data-i18n="period_all">الكل</button>
+        <button onclick="setDashPeriod('month')" data-period="month" class="dash-period-btn px-2 py-1 rounded-lg text-xs font-bold transition" data-i18n="period_month">هذا الشهر</button>
+        <button onclick="setDashPeriod('quarter')" data-period="quarter" class="dash-period-btn px-2 py-1 rounded-lg text-xs font-bold transition" data-i18n="period_quarter">آخر 3 أشهر</button>
+        <button onclick="setDashPeriod('year')" data-period="year" class="dash-period-btn px-2 py-1 rounded-lg text-xs font-bold transition" data-i18n="period_year">هذه السنة</button>
+        <button onclick="setDashPeriod('custom')" data-period="custom" class="dash-period-btn px-2 py-1 rounded-lg text-xs font-bold transition" data-i18n="period_custom">مخصص</button>
+        <div id="dash-custom-range" class="hidden items-center gap-1 flex-wrap">
+          <input type="date" id="dash-from" onchange="renderDashboard()" class="px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+          <span class="text-xs text-slate-500">→</span>
+          <input type="date" id="dash-to" onchange="renderDashboard()" class="px-2 py-1 text-xs rounded-lg border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white">
+        </div>
+        <span id="dash-period-label" class="text-[10px] text-slate-500 mr-auto"></span>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div class="p-3 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200"><div class="text-[10px] font-bold text-emerald-700 mb-1" data-i18n="dash_revenue">الإيرادات</div><div id="dash-total-revenue" class="text-sm font-black text-emerald-700 truncate">0</div></div>
+        <div class="p-3 bg-gradient-to-br from-rose-50 to-rose-100 rounded-xl border border-rose-200"><div class="text-[10px] font-bold text-rose-700 mb-1" data-i18n="dash_expense">المصروفات</div><div id="dash-total-expense" class="text-sm font-black text-rose-700 truncate">0</div></div>
+        <div class="p-3 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200"><div class="text-[10px] font-bold text-blue-700 mb-1" data-i18n="dash_records">السجلات</div><div id="dash-total-records" class="text-sm font-black text-blue-700 truncate">0</div></div>
+        <div class="p-3 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200"><div class="text-[10px] font-bold text-slate-700 mb-1" data-i18n="dash_net">صافي الربح</div><div id="dash-net" class="text-sm font-black text-slate-900 truncate">0</div></div>
+      </div>
+      <div><h4 class="text-sm font-bold text-slate-700 mb-2" data-i18n="workshops_chart">مقارنة الورش</h4><div class="h-56 sm:h-72"><canvas id="dashboard-chart"></canvas></div></div>
+      <div><h4 class="text-sm font-bold text-slate-700 mb-2" data-i18n="ranking">ترتيب الورش</h4>
+        <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-700">
+          <table class="w-full text-right text-xs min-w-[600px]"><thead class="bg-slate-50 dark:bg-slate-700/50 text-xs text-slate-500"><tr><th class="p-2">#</th><th class="p-2" data-i18n="col_workshop">الورشة</th><th class="p-2" data-i18n="dash_revenue">الإيرادات</th><th class="p-2" data-i18n="dash_expense">المصروفات</th><th class="p-2" data-i18n="stat_fines">الغرامات</th><th class="p-2" data-i18n="dash_net">الصافي</th></tr></thead><tbody id="dashboard-ranking-body" class="divide-y divide-slate-100 dark:divide-slate-700/50"></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Compare -->
+<div id="compare-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-2 sm:p-4">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-3xl max-h-[95vh] overflow-hidden border border-slate-200 dark:border-slate-700 fade-in flex flex-col">
+    <div class="px-4 sm:px-6 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+      <h3 class="font-bold text-slate-900 dark:text-white text-sm" data-i18n="compare_title">مقارنة الورش</h3>
+      <button onclick="closeCompare()" class="text-slate-400 hover:text-slate-600 p-1"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+    <div class="p-3 sm:p-6 overflow-y-auto space-y-3">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><select id="compare-ws-a" onchange="renderCompare()" class="px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none"></select><select id="compare-ws-b" onchange="renderCompare()" class="px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none"></select></div>
+      <div class="h-56 sm:h-72"><canvas id="compare-chart"></canvas></div>
+      <div id="compare-result" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] hidden px-4 py-3 rounded-xl text-white font-bold text-sm shadow-2xl max-w-[90vw] text-center"></div>
+<div id="confirm-modal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-900/75 backdrop-blur-sm p-3">
+  <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl w-full max-w-sm p-5 space-y-4 fade-in">
+    <p id="confirm-message" class="text-sm text-slate-700 dark:text-slate-200 font-semibold text-center whitespace-pre-line"></p>
+    <div class="flex gap-2"><button id="confirm-yes" class="flex-1 py-2.5 bg-rose-600 text-white font-bold rounded-xl text-sm" data-i18n="yes">نعم</button><button id="confirm-no" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold rounded-xl text-sm" data-i18n="no">إلغاء</button></div>
+  </div>
+</div>
+
+<!-- PWA: Offline Banner -->
+<div id="offline-banner">⚠️ لا يوجد اتصال بالإنترنت — التطبيق يعمل في الوضع المحلي</div>
+
+<!-- PWA: Install Banner -->
+<div id="install-app-banner">
+  <img src="logo.png" alt="" class="w-12 h-12 rounded-xl bg-white p-1" onerror="this.style.display='none'">
+  <div class="flex-1 min-w-0">
+    <div class="font-bold text-sm">ثبّت التطبيق على جهازك</div>
+    <div class="text-[10px] opacity-90">وصول أسرع + عمل بدون إنترنت</div>
+  </div>
+  <button onclick="installApp()" class="px-3 py-1.5 bg-white text-brand-700 rounded-lg text-xs font-bold whitespace-nowrap">تثبيت</button>
+  <button onclick="dismissInstall()" class="text-white/70 hover:text-white text-lg px-1">✕</button>
+</div>
+
+<!-- FAB Menu -->
+<div id="fab-menu">
+  <button onclick="fabAction('attendance')" class="fab-btn tertiary" title="حضور">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  </button>
+  <button onclick="fabAction('add')" class="fab-btn secondary" title="إضافة سجل">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+  </button>
+  <button onclick="fabAction('share')" class="fab-btn primary" title="مشاركة">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+  </button>
+</div>
+
+<!-- Bottom Nav -->
+<nav id="bottom-nav" class="no-print">
+  <a href="#" onclick="switchPage('dashboard'); return false;" class="bottom-nav-item" data-bn="dashboard">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    <span>الرئيسية</span>
+  </a>
+  <a href="#" onclick="switchPage('expenses'); return false;" class="bottom-nav-item" data-bn="expenses">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+    <span>المالية</span>
+  </a>
+  <a href="#" onclick="switchPage('attendance'); return false;" class="bottom-nav-item" data-bn="attendance">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span>الحضور</span>
+  </a>
+  <a href="#" onclick="switchPage('settings'); return false;" class="bottom-nav-item" data-bn="settings">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    <span>الإعدادات</span>
+  </a>
+</nav>
+
+<script>
+/* ================= i18n ================= */
+const I18N = {
+  ar: {
+    app_title: 'ورشة هادي ناصر آل مستنير للسيارات', app_subtitle: 'نظام الإدارة المالية والاستثمارات', app_subtitle_short: 'نظام الإدارة الشاملة',
+    select_user: 'اختر المستخدم', pin_code: 'رمز الدخول (PIN)', wrong_pin: 'الرمز المدخل غير صحيح', login_btn: 'تسجيل الدخول', lang_switch: 'English',
+    nav_main: 'الرئيسية', nav_financial: 'المالية', nav_operations: 'العمليات', nav_settings: 'الإعدادات',
+    nav_dashboard: 'لوحة التحكم', dashboard: 'لوحة التحكم', users: 'المستخدمين', logout: 'تسجيل الخروج', dark_mode: 'الوضع الليلي',
+    stat_expenses: 'إجمالي المصروفات', stat_deposits: 'إجمالي الإيداعات', stat_rents: 'الإيجارات المسددة', stat_fines: 'غرامات المنشأة', stat_net: 'الرصيد الصافي',
+    chart_title: 'نظرة عامة على الحركة المالية',
+    tab_expenses: 'المصروفات', tab_deposits: 'الإيداعات', tab_rents: 'الإيجارات', tab_fines: 'الغرامات', tab_attendance: 'الحضور والانصراف',
+    search_placeholder: 'بحث...', clear: 'مسح', add: 'إضافة',
+    col_worker: 'اسم العامل', col_iqama: 'رقم الإقامة', col_civil_id: 'السجل المدني / رقم الإقامة', col_service: 'نوع المصروف', col_amount: 'المبلغ', col_date: 'التاريخ', col_notes: 'ملاحظات', col_actions: 'إجراءات',
+    col_voucher: 'نوع السند', col_payee: 'المستفيد', col_month: 'الشهر', col_year: 'السنة', col_due: 'المطلوب', col_paid: 'المسدد', col_remaining: 'المتبقي',
+    col_pay_date: 'تاريخ السداد', col_recipient: 'المستلم', col_payment_type: 'نوع الدفع', col_fine_type: 'نوع الغرامة', col_violation: 'رقم المخالفة', col_authority: 'الجهة', col_status: 'الحالة', col_workshop: 'الورشة',
+    col_check_in: 'وقت الحضور', col_check_out: 'وقت الانصراف', col_hours: 'ساعات العمل', col_attendance_status: 'الحالة',
+    rents_due: 'إجمالي المطلوب', rents_paid: 'المسدد', rents_remaining: 'المتأخرات',
+    fines_total: 'إجمالي الغرامات', fines_paid: 'المسددة', fines_unpaid: 'غير المسددة',
+    attendance_present: 'حاضر', attendance_absent: 'غائب', attendance_hours: 'إجمالي الساعات', attendance_duplicate: 'هذا العامل مسجل مسبقاً لهذا اليوم', attendance_subtitle: 'سجل الحضور والانصراف',
+    quick_checkin: 'تسجيل حضور سريع', quick_checkout: 'تسجيل انصراف', select_workshop: 'اختر الورشة', all_workshops: 'كل الورش', now_btn: 'الآن',
+    select_all: 'تحديد الكل', clear_selection: 'إلغاء التحديد', print_selected: 'طباعة المحدد', print_all: 'طباعة الكل',
+    save: 'حفظ', cancel: 'إلغاء', manage_users: 'إدارة المستخدمين', add_new_user: 'إضافة مستخدم جديد', name_placeholder: 'الاسم', pin_placeholder: 'رمز الدخول (PIN)',
+    settings: 'الإعدادات والنسخ الاحتياطي', export_backup: 'تصدير نسخة احتياطية', import_backup: 'استعادة نسخة احتياطية', reset_data: 'إعادة ضبط وحذف جميع البيانات',
+    owner_dashboard: 'لوحة تحكم المالك', dashboard_subtitle: 'نظرة شاملة على أداء كل الورش',
+    period: 'الفترة:', period_all: 'الكل', period_month: 'هذا الشهر', period_quarter: 'آخر 3 أشهر', period_year: 'هذه السنة', period_custom: 'مخصص',
+    dash_revenue: 'الإيرادات', dash_expense: 'المصروفات', dash_records: 'السجلات', dash_net: 'صافي الربح',
+    compare_btn: 'مقارنة ورشتين', export_all_pdf: 'تصدير PDF شامل', workshops_chart: 'مقارنة الورش', ranking: 'ترتيب الورش',
+    compare_title: 'مقارنة الورش', compare_subtitle: 'اختر ورشتين:', yes: 'نعم', no: 'إلغاء',
+    add_record: 'إضافة سجل جديد', edit_record: 'تعديل السجل', delete_confirm: 'هل أنت متأكد من حذف هذا السجل؟', deleted: 'تم الحذف بنجاح', updated: 'تم التعديل بنجاح', added: 'تمت الإضافة بنجاح',
+    duplicate_rent: 'هذا الشهر مسجل مسبقاً لهذه الورشة', backup_exported: 'تم تصدير النسخة الاحتياطية', backup_imported: 'تمت الاستعادة بنجاح',
+    invalid_file: 'ملف غير صالح', file_error: 'خطأ في قراءة الملف', csv_exported: 'تم تصدير CSV', pdf_created: 'تم تصدير PDF بنجاح', pdf_failed: 'فشل التصدير',
+    pdf_creating: 'جارٍ إنشاء PDF...', pdf_all_creating: 'جارٍ تجهيز التقرير الشامل...', pdf_all_created: 'تم تصدير التقرير الشامل بنجاح',
+    reset_confirm: 'تنبيه: سيتم مسح جميع البيانات نهائياً. متابعة؟', user_added: 'تمت إضافة المستخدم', user_deleted: 'تم حذف المستخدم', delete_user_confirm: 'هل أنت متأكد من حذف هذا المستخدم؟',
+    paid: 'مسددة', unpaid: 'غير مسددة', paid_full: 'مسدد ✓', owner_role: 'مالك', accountant_role: 'محاسب', no_results: 'لا توجد نتائج', sar: 'ر.س',
+    months: ['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],
+    fine_types: ['مكتب عمل','تأمينات اجتماعية','بلدية','إقامة','جوازات','مرور','دفاع مدني','أخرى'],
+    service_types: ['إصدار/تجديد إقامة','تجديد جواز','إصدار رخصة عمل','تأمينات اجتماعية','تأمين طبي','مصروفات تشغيلية'],
+    voucher_types: ['أمر قيد','أمر صرف','إيداع نقدي','تحويل بنكي'],
+    payment_types: ['نقدي','تحويل بنكي','شيك'],
+    status_options: ['غير مسددة','مسددة'],
+    attendance_status: ['حاضر','غائب','إجازة','متأخر'],
+    workshop_names: ['ورشة انان التركي','ورشة علي تركي','ورشة بابول','ورشة محمد الباكستاني','مجموعة أبو يونس','مجموعة إدريس','قطع الغيار'],
+    cannot_delete_primary: 'لا يمكن حذف المستخدم الأساسي', cannot_delete_last_owner: 'لا يمكن حذف آخر مالك', pin_updated: 'تم تحديث الرمز',
+    pin_invalid: 'الرمز يجب أن يكون 4-6 أرقام', users_count: 'مستخدم مسجل', primary_badge: 'أساسي',
+    page_dashboard: 'لوحة التحكم', page_attendance: 'الحضور والانصراف',
+    manage_workshops: 'إدارة الأقسام', workshops_count: 'قسم مسجل',
+    workshop_name_ar: 'الاسم بالعربية', workshop_name_en: 'الاسم بالإنجليزية'
+  },
+  en: {
+    app_title: 'Hadi Nasser Al-Mustaneer Car Workshop', app_subtitle: 'Financial & Investment Management System', app_subtitle_short: 'Comprehensive Management System',
+    select_user: 'Select User', pin_code: 'PIN Code', wrong_pin: 'Incorrect PIN', login_btn: 'Login', lang_switch: 'العربية',
+    nav_main: 'Main', nav_financial: 'Financial', nav_operations: 'Operations', nav_settings: 'Settings',
+    nav_dashboard: 'Dashboard', dashboard: 'Dashboard', users: 'Users', logout: 'Logout', dark_mode: 'Dark Mode',
+    stat_expenses: 'Total Expenses', stat_deposits: 'Total Deposits', stat_rents: 'Rents Paid', stat_fines: 'Facility Fines', stat_net: 'Net Balance',
+    chart_title: 'Financial Overview',
+    tab_expenses: 'Expenses', tab_deposits: 'Deposits', tab_rents: 'Rents', tab_fines: 'Fines', tab_attendance: 'Attendance',
+    search_placeholder: 'Search...', clear: 'Clear', add: 'Add',
+    col_worker: 'Worker Name', col_iqama: 'Iqama No.', col_civil_id: 'Civil ID / Iqama No.', col_service: 'Service Type', col_amount: 'Amount', col_date: 'Date', col_notes: 'Notes', col_actions: 'Actions',
+    col_voucher: 'Voucher Type', col_payee: 'Beneficiary', col_month: 'Month', col_year: 'Year', col_due: 'Due', col_paid: 'Paid', col_remaining: 'Remaining',
+    col_pay_date: 'Payment Date', col_recipient: 'Recipient', col_payment_type: 'Payment Method', col_fine_type: 'Fine Type', col_violation: 'Violation No.', col_authority: 'Authority', col_status: 'Status', col_workshop: 'Workshop',
+    col_check_in: 'Check In', col_check_out: 'Check Out', col_hours: 'Hours', col_attendance_status: 'Status',
+    rents_due: 'Total Due', rents_paid: 'Paid', rents_remaining: 'Outstanding',
+    fines_total: 'Total Fines', fines_paid: 'Paid', fines_unpaid: 'Unpaid',
+    attendance_present: 'Present', attendance_absent: 'Absent', attendance_hours: 'Total Hours', attendance_duplicate: 'This worker is already recorded for this day', attendance_subtitle: 'Attendance Log',
+    quick_checkin: 'Quick Check-In', quick_checkout: 'Quick Check-Out', select_workshop: 'Select Workshop', all_workshops: 'All Workshops', now_btn: 'Now',
+    select_all: 'Select All', clear_selection: 'Clear Selection', print_selected: 'Print Selected', print_all: 'Print All',
+    save: 'Save', cancel: 'Cancel', manage_users: 'Manage Users', add_new_user: 'Add New User', name_placeholder: 'Name', pin_placeholder: 'PIN Code',
+    settings: 'Settings & Backup', export_backup: 'Export Backup', import_backup: 'Restore Backup', reset_data: 'Reset & Delete All Data',
+    owner_dashboard: 'Owner Dashboard', dashboard_subtitle: 'Complete overview of all workshops',
+    period: 'Period:', period_all: 'All', period_month: 'This Month', period_quarter: 'Last 3 Months', period_year: 'This Year', period_custom: 'Custom',
+    dash_revenue: 'Revenue', dash_expense: 'Expenses', dash_records: 'Records', dash_net: 'Net Profit',
+    compare_btn: 'Compare Workshops', export_all_pdf: 'Export Full PDF', workshops_chart: 'Workshops Comparison', ranking: 'Workshops Ranking',
+    compare_title: 'Compare Workshops', compare_subtitle: 'Select two workshops:', yes: 'Yes', no: 'Cancel',
+    add_record: 'Add New Record', edit_record: 'Edit Record', delete_confirm: 'Are you sure you want to delete this record?', deleted: 'Deleted successfully', updated: 'Updated successfully', added: 'Added successfully',
+    duplicate_rent: 'This month is already recorded for this workshop', backup_exported: 'Backup exported', backup_imported: 'Restored successfully',
+    invalid_file: 'Invalid file', file_error: 'Error reading file', csv_exported: 'CSV exported', pdf_created: 'PDF exported successfully', pdf_failed: 'Export failed',
+    pdf_creating: 'Creating PDF...', pdf_all_creating: 'Preparing comprehensive report...', pdf_all_created: 'Comprehensive report exported successfully',
+    reset_confirm: 'Warning: all data will be deleted permanently. Continue?', user_added: 'User added', user_deleted: 'User deleted', delete_user_confirm: 'Are you sure you want to delete this user?',
+    paid: 'Paid', unpaid: 'Unpaid', paid_full: 'Paid ✓', owner_role: 'Owner', accountant_role: 'Accountant', no_results: 'No results', sar: 'SAR',
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    fine_types: ['Labor Office','Social Insurance','Municipality','Iqama','Passports','Traffic','Civil Defense','Other'],
+    service_types: ['Iqama Issue/Renewal','Passport Renewal','Work Permit Issue','Social Insurance','Medical Insurance','Operational Expenses'],
+    voucher_types: ['Journal Voucher','Payment Voucher','Cash Deposit','Bank Transfer'],
+    payment_types: ['Cash','Bank Transfer','Check'],
+    status_options: ['Unpaid','Paid'],
+    attendance_status: ['Present','Absent','Leave','Late'],
+    workshop_names: ['Anan Al-Turki Workshop','Ali Turki Workshop','Babul Workshop','Mohammed Pakistani Workshop','Abu Younis Group','Idris Group','Spare Parts'],
+    cannot_delete_primary: 'Cannot delete primary user', cannot_delete_last_owner: 'Cannot delete the last owner', pin_updated: 'PIN updated',
+    pin_invalid: 'PIN must be 4-6 digits', users_count: 'registered users', primary_badge: 'Primary',
+    page_dashboard: 'Dashboard', page_attendance: 'Attendance',
+    manage_workshops: 'Manage Sections', workshops_count: 'registered sections',
+    workshop_name_ar: 'Arabic Name', workshop_name_en: 'English Name'
+  }
+};
+
+let currentLang = localStorage.getItem('lang') || 'ar';
+const t = (key) => I18N[currentLang][key] || key;
+
+/* ============ WORKSHOPS (ديناميكية) ============ */
+const DEFAULT_WORKSHOPS = ['anan','turki','babul','pakistani','younis','idris','spare_parts'].map((id, i) => ({
+  id,
+  nameAr: I18N.ar.workshop_names[i],
+  nameEn: I18N.en.workshop_names[i]
+}));
+
+let WORKSHOPS = (JSON.parse(localStorage.getItem('al_mustanee_workshops')) || DEFAULT_WORKSHOPS).map(w => ({
+  ...w,
+  name: (localStorage.getItem('lang') === 'en') ? (w.nameEn || w.nameAr) : (w.nameAr || w.nameEn)
+}));
+
+function saveWorkshops() {
+  const data = WORKSHOPS.map(w => ({ id: w.id, nameAr: w.nameAr, nameEn: w.nameEn }));
+  localStorage.setItem('al_mustanee_workshops', JSON.stringify(data));
+}
+function getWorkshopName(id) {
+  const w = WORKSHOPS.find(x => x.id === id);
+  if (!w) return '';
+  return currentLang === 'ar' ? w.nameAr : (w.nameEn || w.nameAr);
+}
+function rebuildWorkshopNames() {
+  WORKSHOPS.forEach(w => { w.name = currentLang === 'ar' ? w.nameAr : (w.nameEn || w.nameAr); });
+}
+
+const DEFAULT_USERS = [
+  { id:'1', name:'المالك: هادي ناصر', pin:'1234', role:'owner', primary:true },
+  { id:'2', name:'المحاسب: عبدالله', pin:'5555', role:'accountant' }
+];
+
+const SCHEMAS = {
+  expenses: [
+    { name:'workerName', labelKey:'col_worker', type:'text', required:true },
+    { name:'iqamaNumber', labelKey:'col_iqama', type:'text', required:true },
+    { name:'serviceType', labelKey:'col_service', type:'select', required:true, optionsKey:'service_types' },
+    { name:'amount', labelKey:'col_amount', type:'number', required:true, min:0 },
+    { name:'date', labelKey:'col_date', type:'date', required:true },
+    { name:'notes', labelKey:'col_notes', type:'textarea' }
+  ],
+  deposits: [
+    { name:'voucherType', labelKey:'col_voucher', type:'select', required:true, optionsKey:'voucher_types' },
+    { name:'payee', labelKey:'col_payee', type:'text', required:true },
+    { name:'amount', labelKey:'col_amount', type:'number', required:true, min:0 },
+    { name:'date', labelKey:'col_date', type:'date', required:true },
+    { name:'notes', labelKey:'col_notes', type:'textarea' }
+  ],
+  rents: [
+    { name:'month', labelKey:'col_month', type:'select', required:true, optionsKey:'months' },
+    { name:'year', labelKey:'col_year', type:'number', required:true, min:2000 },
+    { name:'value', labelKey:'rents_due', type:'number', required:true, min:0 },
+    { name:'paidAmount', labelKey:'col_paid', type:'number', required:true, min:0 },
+    { name:'date', labelKey:'col_pay_date', type:'date', required:true },
+    { name:'recipient', labelKey:'col_recipient', type:'text', required:true },
+    { name:'paymentType', labelKey:'col_payment_type', type:'select', required:true, optionsKey:'payment_types' },
+    { name:'notes', labelKey:'col_notes', type:'textarea' }
+  ],
+  fines: [
+    { name:'fineType', labelKey:'col_fine_type', type:'select', required:true, optionsKey:'fine_types' },
+    { name:'violationNumber', labelKey:'col_violation', type:'text', required:true },
+    { name:'authority', labelKey:'col_authority', type:'text', required:true },
+    { name:'amount', labelKey:'col_amount', type:'number', required:true, min:0 },
+    { name:'date', labelKey:'col_date', type:'date', required:true },
+    { name:'status', labelKey:'col_status', type:'select', required:true, optionsKey:'status_options' },
+    { name:'paidDate', labelKey:'col_pay_date', type:'date' },
+    { name:'notes', labelKey:'col_notes', type:'textarea' }
+  ],
+  attendance: [
+    { name:'workerName', labelKey:'col_worker', type:'text', required:true },
+    { name:'iqamaNumber', labelKey:'col_civil_id', type:'text', required:true },
+    { name:'date', labelKey:'col_date', type:'date', required:true },
+    { name:'checkIn', labelKey:'col_check_in', type:'time', required:true },
+    { name:'checkOut', labelKey:'col_check_out', type:'time' },
+    { name:'status', labelKey:'col_attendance_status', type:'select', required:true, optionsKey:'attendance_status' },
+    { name:'notes', labelKey:'col_notes', type:'textarea' }
+  ]
+};
+const COLUMNS = {
+  expenses: [
+    { key:'workerName', labelKey:'col_worker', cls:'font-bold' }, { key:'iqamaNumber', labelKey:'col_iqama' },
+    { key:'serviceType', labelKey:'col_service', cls:'badge-amber' }, { key:'amount', labelKey:'col_amount', cls:'font-bold text-rose-600', fmt:'money' },
+    { key:'date', labelKey:'col_date', cls:'text-slate-500' }, { key:'notes', labelKey:'col_notes', cls:'text-slate-500' }
+  ],
+  deposits: [
+    { key:'voucherType', labelKey:'col_voucher', cls:'badge-emerald' }, { key:'payee', labelKey:'col_payee' },
+    { key:'amount', labelKey:'col_amount', cls:'font-bold text-emerald-600', fmt:'money' },
+    { key:'date', labelKey:'col_date', cls:'text-slate-500' }, { key:'notes', labelKey:'col_notes', cls:'text-slate-500' }
+  ],
+  rents: [
+    { key:'month', labelKey:'col_month', cls:'font-bold' }, { key:'year', labelKey:'col_year', cls:'text-slate-500' },
+    { key:'value', labelKey:'col_due', cls:'font-bold', fmt:'money' },
+    { key:'paidAmount', labelKey:'col_paid', cls:'font-bold text-emerald-600', fmt:'money' },
+    { key:'remaining', labelKey:'col_remaining', cls:'font-bold text-rose-600', fmt:'remaining' },
+    { key:'date', labelKey:'col_pay_date', cls:'text-slate-500' }, { key:'recipient', labelKey:'col_recipient' },
+    { key:'paymentType', labelKey:'col_payment_type', cls:'badge-slate' }
+  ],
+  fines: [
+    { key:'fineType', labelKey:'col_fine_type', cls:'badge-orange' }, { key:'violationNumber', labelKey:'col_violation', cls:'font-mono text-xs' },
+    { key:'authority', labelKey:'col_authority' }, { key:'amount', labelKey:'col_amount', cls:'font-bold text-orange-600', fmt:'money' },
+    { key:'date', labelKey:'col_date', cls:'text-slate-500' }, { key:'status', labelKey:'col_status', cls:'badge-status' }
+  ],
+  attendance: [
+    { key:'workerName', labelKey:'col_worker', cls:'font-bold' },
+    { key:'iqamaNumber', labelKey:'col_civil_id', cls:'text-slate-500 font-mono text-[10px]' },
+    { key:'date', labelKey:'col_date', cls:'text-slate-500' },
+    { key:'checkIn', labelKey:'col_check_in', cls:'font-bold text-emerald-600' },
+    { key:'checkOut', labelKey:'col_check_out', cls:'font-bold text-rose-600' },
+    { key:'hours', labelKey:'col_hours', cls:'font-bold', fmt:'hours' },
+    { key:'status', labelKey:'col_attendance_status', cls:'badge-attendance' }
+  ]
+};
+
+let state = {
+  users: JSON.parse(localStorage.getItem('al_mustanee_users')) || DEFAULT_USERS,
+  currentUser: null, activeWorkshop: (WORKSHOPS[0]?.id || 'anan'), activeSubTab: 'expenses', activePage: 'dashboard',
+  expenses: JSON.parse(localStorage.getItem('al_mustanee_expenses')) || [],
+  deposits: JSON.parse(localStorage.getItem('al_mustanee_deposits')) || [],
+  rents: JSON.parse(localStorage.getItem('al_mustanee_rents')) || [],
+  fines: JSON.parse(localStorage.getItem('al_mustanee_fines')) || [],
+  attendance: JSON.parse(localStorage.getItem('al_mustanee_attendance')) || []
+};
+let chartInstance = null, dashboardChart = null, compareChart = null, dashPeriod = 'all';
+let selectedAttendance = new Set();
+
+const $ = id => document.getElementById(id);
+const fmtMoney = n => Number(n || 0).toLocaleString(currentLang === 'ar' ? 'ar-SA' : 'en-US') + ' ' + t('sar');
+
+function haptic(type = 'light') {
+  if (!('vibrate' in navigator)) return;
+  const patterns = { light:[10], medium:[20], success:[15,30,15], error:[40,20,40] };
+  try { navigator.vibrate(patterns[type] || [10]); } catch(e){}
+}
+
+function toast(msg, color='bg-brand-600') {
+  const el = $('toast');
+  el.className = `fixed bottom-4 left-1/2 -translate-x-1/2 z-[60] px-4 py-3 rounded-xl text-white font-bold text-sm shadow-2xl max-w-[90vw] text-center ${color}`;
+  el.textContent = msg; el.classList.remove('hidden');
+  haptic(color.includes('rose') ? 'error' : 'success');
+  clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hidden'), 2800);
+}
+function confirmDialog(msg) {
+  return new Promise(resolve => {
+    $('confirm-message').textContent = msg;
+    $('confirm-modal').classList.remove('hidden');
+    const cleanup = val => { $('confirm-modal').classList.add('hidden'); $('confirm-yes').onclick = null; $('confirm-no').onclick = null; resolve(val); };
+    $('confirm-yes').onclick = () => cleanup(true);
+    $('confirm-no').onclick = () => cleanup(false);
+  });
+}
+
+/* ============ SIDEBAR ============ */
+function openSidebar() {
+  const sb = $('sidebar');
+  sb.classList.add('sidebar-open');
+  sb.style.transform = 'translateX(0)';
+  $('sidebar-overlay').classList.remove('hidden');
+}
+function closeSidebar() {
+  if (window.innerWidth < 1024) {
+    const sb = $('sidebar');
+    sb.classList.remove('sidebar-open');
+    sb.style.transform = currentLang === 'ar' ? 'translateX(100%)' : 'translateX(-100%)';
+    $('sidebar-overlay').classList.add('hidden');
+  }
+}
+function updateSidebarPosition() {
+  const sb = $('sidebar'); if (!sb) return;
+  const isRTL = currentLang === 'ar';
+  if (window.innerWidth >= 1024) {
+    sb.style.transform = 'translateX(0)';
+    sb.style.right = isRTL ? '0' : 'auto';
+    sb.style.left = isRTL ? 'auto' : '0';
+  } else {
+    sb.style.transform = sb.classList.contains('sidebar-open') ? 'translateX(0)' : (isRTL ? 'translateX(100%)' : 'translateX(-100%)');
+    sb.style.right = isRTL ? '0' : 'auto';
+    sb.style.left = isRTL ? 'auto' : '0';
+  }
+}
+window.addEventListener('resize', () => {
+  clearTimeout(window._resizeT);
+  window._resizeT = setTimeout(updateSidebarPosition, 150);
+});
+
+/* ============ PAGE NAVIGATION ============ */
+function switchPage(page) {
+  state.activePage = page;
+  closeSidebar();
+  ['dashboard','expenses','deposits','rents','fines','attendance','users','workshops','settings'].forEach(p => {
+    const el = $(`page-${p}`); if (el) el.classList.add('hidden');
+    const nav = $(`nav-${p}`); if (nav) nav.classList.remove('active');
+  });
+  const isFinancial = ['expenses','deposits','rents','fines'].includes(page);
+  const targetPage = isFinancial ? 'expenses' : page;
+  const targetEl = $(`page-${targetPage}`); if (targetEl) targetEl.classList.remove('hidden');
+  const targetNav = $(`nav-${page}`); if (targetNav) targetNav.classList.add('active');
+  $('workshop-tabs').classList.toggle('hidden', !isFinancial);
+  const titles = {
+    dashboard: t('page_dashboard'), expenses: t('tab_expenses'), deposits: t('tab_deposits'),
+    rents: t('tab_rents'), fines: t('tab_fines'), attendance: t('page_attendance'),
+    users: t('manage_users'), workshops: t('manage_workshops'), settings: t('settings')
+  };
+  $('page-title').textContent = titles[page] || '';
+  if (isFinancial) {
+    state.activeSubTab = page;
+    ['expenses','deposits','rents','fines'].forEach(tb => {
+      const view = $(`view-${tb}`); if (view) view.classList.toggle('hidden', tb !== page);
+    });
+    if ($('financial-page-title')) $('financial-page-title').textContent = t('tab_' + page);
+    if ($('search-input')) $('search-input').value = '';
+    if ($('filter-date-from')) $('filter-date-from').value = '';
+    if ($('filter-date-to')) $('filter-date-to').value = '';
+    renderTables();
+  }
+  if (page === 'attendance') renderAttendanceList();
+  if (page === 'users') renderUsersList();
+  if (page === 'workshops') renderWorkshopsList();
+  if (page === 'dashboard') { renderStats(); updateChart(); }
+  document.querySelectorAll('[data-bn]').forEach(el => {
+    el.classList.toggle('active', el.dataset.bn === page);
+  });
+  window.scrollTo(0, 0);
+}
+
+/* ============ LANGUAGE ============ */
+function toggleLanguage() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  localStorage.setItem('lang', currentLang);
+  applyLanguage();
+}
+function applyLanguage() {
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[currentLang][key]) el.textContent = I18N[currentLang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (I18N[currentLang][key]) el.placeholder = I18N[currentLang][key];
+  });
+  rebuildWorkshopNames();
+  if ($('compare-ws-a')) {
+    const valA = $('compare-ws-a').value, valB = $('compare-ws-b').value;
+    const opts = WORKSHOPS.map(w => `<option value="${w.id}">${w.name}">${w.name}</option>`).join('');
+    $('compare-ws-a').innerHTML = opts; $('compare-ws-b').innerHTML = opts;
+    $('compare-ws-a').value = valA; $('compare-ws-b').value = valB;
+  }
+  initWorkshopTabs(); populateLoginUsers(); updateSidebarPosition();
+  if (!$('data-modal').classList.contains('hidden')) buildFormFields();
+  if (state.currentUser) {
+    switchWorkshop(state.activeWorkshop);
+    switchPage(state.activePage);
+    $('current-user-role').textContent = state.currentUser.role === 'owner' ? t('owner_role') : t('accountant_role');
+  }
+}
+
+/* ============ THEME ============ */
+function toggleDarkMode() {
+  const isDark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateChart();
+  if (!$('dashboard-modal').classList.contains('hidden')) renderDashboard();
+  if (!$('compare-modal').classList.contains('hidden')) renderCompare();
+}
+
+/* ============ AUTH ============ */
+function populateLoginUsers() {
+  if (!$('login-user-select')) return;
+  $('login-user-select').innerHTML = state.users.map(u => `<option value="${u.id}">${u.name} (${u.role === 'owner' ? t('owner_role') : t('accountant_role')})</option>`).join('');
+}
+function handleLogin(e) {
+  e.preventDefault();
+  const userId = $('login-user-select').value;
+  const pin = $('login-pin').value;
+  const user = state.users.find(u => u.id === userId);
+  if (!user || user.pin !== pin) { $('login-error').classList.remove('hidden'); haptic('error'); return; }
+  state.currentUser = user;
+  $('login-screen').classList.add('hidden');
+  $('main-app').classList.remove('hidden');
+  $('current-user-name').textContent = user.name;
+  $('current-user-role').textContent = user.role === 'owner' ? t('owner_role') : t('accountant_role');
+  $('nav-users').classList.toggle('hidden', user.role !== 'owner');
+  $('nav-workshops').classList.toggle('hidden', user.role !== 'owner');
+  setTimeout(updateSidebarPosition, 100);
+  const lastWs = localStorage.getItem(`lastWs_${user.id}`);
+  const validWs = WORKSHOPS.find(w => w.id === lastWs) ? lastWs : (WORKSHOPS[0]?.id || 'anan');
+  switchWorkshop(validWs);
+  switchPage('dashboard');
+  haptic('success');
+}
+function handleLogout() {
+  state.currentUser = null;
+  $('main-app').classList.add('hidden');
+  $('login-screen').classList.remove('hidden');
+  $('login-pin').value = ''; $('login-error').classList.add('hidden');
+}
+
+/* ============ WORKSHOPS TABS ============ */
+function initWorkshopTabs() {
+  if (!$('workshop-tabs')) return;
+  $('workshop-tabs').innerHTML = WORKSHOPS.map(w => `<button onclick="switchWorkshop('${w.id}')" id="tab-${w.id}" class="px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition">${w.name}</button>`).join('');
+  WORKSHOPS.forEach(w => {
+    const btn = $(`tab-${w.id}`); if (!btn) return;
+    const active = w.id === state.activeWorkshop;
+    btn.className = `px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition ${active ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+  });
+}
+function switchWorkshop(id) {
+  state.activeWorkshop = id;
+  WORKSHOPS.forEach(w => {
+    const btn = $(`tab-${w.id}`); if (!btn) return;
+    const active = w.id === id;
+    btn.className = `px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition ${active ? 'bg-brand-600 text-white shadow-md shadow-brand-600/20' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+  });
+  if (state.currentUser) localStorage.setItem(`lastWs_${state.currentUser.id}`, id);
+  renderApp();
+}
+
+/* ============ RENDER ============ */
+function renderApp() {
+  saveState(); renderStats(); renderTables(); updateChart();
+  if (state.activePage === 'attendance') renderAttendanceList();
+}
+function saveState() {
+  localStorage.setItem('al_mustanee_users', JSON.stringify(state.users));
+  localStorage.setItem('al_mustanee_expenses', JSON.stringify(state.expenses));
+  localStorage.setItem('al_mustanee_deposits', JSON.stringify(state.deposits));
+  localStorage.setItem('al_mustanee_rents', JSON.stringify(state.rents));
+  localStorage.setItem('al_mustanee_fines', JSON.stringify(state.fines));
+  localStorage.setItem('al_mustanee_attendance', JSON.stringify(state.attendance));
+  saveWorkshops();
+}
+function getWorkshopTotals(wsId) {
+  const sum = (arr, key) => arr.filter(x => x.workshopId === wsId).reduce((s, i) => s + Number(i[key] || 0), 0);
+  const exp = sum(state.expenses, 'amount');
+  const dep = sum(state.deposits, 'amount');
+  const rnt = state.rents.filter(x => x.workshopId === wsId).reduce((s, i) => s + Number(i.paidAmount || 0), 0);
+  const fns = state.fines.filter(x => x.workshopId === wsId).reduce((s, i) => s + Number(i.amount || 0), 0);
+  return { exp, dep, rnt, fns, net: (dep + rnt) - exp - fns };
+}
+function renderStats() {
+  const st = getWorkshopTotals(state.activeWorkshop);
+  if ($('stat-total-expenses')) $('stat-total-expenses').textContent = fmtMoney(st.exp);
+  if ($('stat-total-deposits')) $('stat-total-deposits').textContent = fmtMoney(st.dep);
+  if ($('stat-rent-collected')) $('stat-rent-collected').textContent = fmtMoney(st.rnt);
+  if ($('stat-total-fines')) $('stat-total-fines').textContent = fmtMoney(st.fns);
+  if ($('stat-net-balance')) $('stat-net-balance').textContent = fmtMoney(st.net);
+}
+function renderRentsSummary() {
+  const rents = state.rents.filter(r => r.workshopId === state.activeWorkshop);
+  const totalDue = rents.reduce((s, r) => s + Number(r.value || 0), 0);
+  const totalPaid = rents.reduce((s, r) => s + Number(r.paidAmount || 0), 0);
+  if ($('rents-total-due')) $('rents-total-due').textContent = fmtMoney(totalDue);
+  if ($('rents-total-paid')) $('rents-total-paid').textContent = fmtMoney(totalPaid);
+  if ($('rents-total-remaining')) $('rents-total-remaining').textContent = fmtMoney(totalDue - totalPaid);
+}
+function renderFinesSummary() {
+  const fines = state.fines.filter(f => f.workshopId === state.activeWorkshop);
+  const totalAll = fines.reduce((s, f) => s + Number(f.amount || 0), 0);
+  const paidStatus = I18N[currentLang].status_options[1];
+  const totalPaid = fines.filter(f => f.status === paidStatus).reduce((s, f) => s + Number(f.amount || 0), 0);
+  if ($('fines-total-all')) $('fines-total-all').textContent = fmtMoney(totalAll);
+  if ($('fines-total-paid')) $('fines-total-paid').textContent = fmtMoney(totalPaid);
+  if ($('fines-total-unpaid')) $('fines-total-unpaid').textContent = fmtMoney(totalAll - totalPaid);
+}
+function renderTable(category) {
+  const tbody = $(`${category}-table-body`); if (!tbody) return;
+  const cols = COLUMNS[category];
+  const search = $('search-input')?.value.trim().toLowerCase() || '';
+  const from = $('filter-date-from')?.value || '', to = $('filter-date-to')?.value || '';
+  const rows = state[category].filter(item => {
+    if (item.workshopId !== state.activeWorkshop) return false;
+    if (item.date) { if (from && item.date < from) return false; if (to && item.date > to) return false; }
+    if (search && !Object.values(item).join(' ').toLowerCase().includes(search)) return false;
+    return true;
+  });
+  const colspan = cols.length + 1;
+  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="${colspan}" class="p-6 text-center text-slate-400">${t('no_results')}</td></tr>`; return; }
+  const isDeposit = category === 'deposits';
+  const paidStatus = I18N[currentLang].status_options[1];
+  tbody.innerHTML = rows.map(item => {
+    const cells = cols.map(c => {
+      let val = item[c.key] ?? '-';
+      if (c.fmt === 'money') val = fmtMoney(item[c.key]);
+      if (c.fmt === 'remaining') {
+        const remaining = Number(item.value || 0) - Number(item.paidAmount || 0);
+        if (remaining <= 0) return `<td class="p-2 sm:p-3"><span class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold">${t('paid_full')}</span></td>`;
+        return `<td class="p-2 sm:p-3 font-bold text-rose-600">${fmtMoney(remaining)}</td>`;
+      }
+      if (c.cls === 'badge-amber') return `<td class="p-2 sm:p-3"><span class="px-2 py-1 bg-amber-50 text-amber-600 rounded-lg text-xs">${val}</span></td>`;
+      if (c.cls === 'badge-emerald') return `<td class="p-2 sm:p-3"><span class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs">${val}</span></td>`;
+      if (c.cls === 'badge-slate') return `<td class="p-2 sm:p-3"><span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 rounded-lg text-xs">${val}</span></td>`;
+      if (c.cls === 'badge-orange') return `<td class="p-2 sm:p-3"><span class="px-2 py-1 bg-orange-50 text-orange-600 rounded-lg text-xs">${val}</span></td>`;
+      if (c.cls === 'badge-status') {
+        const isPaid = item.status === paidStatus;
+        return `<td class="p-2 sm:p-3"><span class="px-2 py-1 ${isPaid ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'} rounded-lg text-xs font-bold">${isPaid ? t('paid_full') : t('unpaid')}</span></td>`;
+      }
+      return `<td class="p-2 sm:p-3 ${c.cls || ''}">${val}</td>`;
+    }).join('');
+    const printBtn = isDeposit ? `<button onclick="printVoucher('${item.id}')" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2z"/></svg></button>` : '';
+    return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30">${cells}<td class="p-2 sm:p-3 text-center flex justify-center gap-1"><button onclick="editEntry('${category}','${item.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button><button onclick="deleteEntry('${category}','${item.id}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>${printBtn}</td></tr>`;
+  }).join('');
+}
+function renderTables() { renderTable('expenses'); renderTable('deposits'); renderTable('rents'); renderTable('fines'); renderRentsSummary(); renderFinesSummary(); }
+function clearFilters() { if ($('search-input')) $('search-input').value = ''; if ($('filter-date-from')) $('filter-date-from').value = ''; if ($('filter-date-to')) $('filter-date-to').value = ''; renderTables(); }
+
+/* ============ CHART ============ */
+function updateChart() {
+  const canvas = $('financialChart'); if (!canvas) return;
+  const st = getWorkshopTotals(state.activeWorkshop);
+  const isDark = document.documentElement.classList.contains('dark');
+  const textColor = isDark ? '#cbd5e1' : '#475569';
+  const gridColor = isDark ? '#334155' : '#e2e8f0';
+  if (chartInstance) chartInstance.destroy();
+  chartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: { labels: [t('tab_expenses'), t('tab_deposits'), t('stat_rents'), t('tab_fines')], datasets: [{ data: [st.exp, st.dep, st.rnt, st.fns], backgroundColor: ['rgba(244,63,94,.7)','rgba(16,185,129,.7)','rgba(59,130,246,.7)','rgba(249,115,22,.7)'], borderColor: ['rgb(244,63,94)','rgb(16,185,129)','rgb(59,130,246)','rgb(249,115,22)'], borderWidth: 1, borderRadius: 8 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => fmtMoney(c.parsed.y) } } }, scales: { y: { beginAtZero: true, ticks: { color: textColor, font: { family: 'Cairo' } }, grid: { color: gridColor } }, x: { ticks: { color: textColor, font: { family: 'Cairo' } }, grid: { display: false } } } }
+  });
+}
+
+/* ============ FORM ============ */
+function adjustTime(btn, delta) {
+  const input = btn.parentElement.querySelector('input[type="time"]');
+  if (!input.value) input.value = '08:00';
+  const [h, m] = input.value.split(':').map(Number);
+  let total = h * 60 + m + delta;
+  if (total < 0) total += 24 * 60;
+  if (total >= 24 * 60) total -= 24 * 60;
+  input.value = String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+}
+function setTimeNow(btn) {
+  const input = btn.parentElement.querySelector('input[type="time"]');
+  const now = new Date();
+  input.value = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+}
+function openAddModal() { $('entry-id').value = ''; $('modal-title').textContent = t('add_record'); buildFormFields(); $('data-modal').classList.remove('hidden'); }
+function editEntry(category, id) {
+  const item = state[category].find(x => x.id === id); if (!item) return;
+  state.activeSubTab = category;
+  $('entry-id').value = id; $('modal-title').textContent = t('edit_record');
+  buildFormFields(item); $('data-modal').classList.remove('hidden');
+}
+async function deleteEntry(category, id) {
+  if (!await confirmDialog(t('delete_confirm'))) return;
+  state[category] = state[category].filter(x => x.id !== id);
+  renderApp();
+  if (state.activePage === 'attendance') renderAttendanceList();
+  toast(t('deleted'));
+}
+function closeDataModal() { $('data-modal').classList.add('hidden'); }
+function buildFormFields(data = {}) {
+  const schema = SCHEMAS[state.activeSubTab];
+  $('form-fields-container').innerHTML = schema.map(f => {
+    const val = data[f.name] ?? (f.type === 'date' ? new Date().toISOString().split('T')[0] : '');
+    const req = f.required ? 'required' : '';
+    const ph = f.placeholder ? `placeholder="${f.placeholder}"` : '';
+    const min = f.min !== undefined ? `min="${f.min}"` : '';
+    const base = 'w-full px-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none focus:ring-2 focus:ring-brand-500';
+    const label = t(f.labelKey);
+    let input;
+    if (f.type === 'select') {
+      const opts = I18N[currentLang][f.optionsKey];
+      input = `<select name="${f.name}" ${req} class="${base}">${opts.map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('')}</select>`;
+    } else if (f.type === 'time') {
+      input = `<div class="flex items-center gap-1">
+        <button type="button" onclick="adjustTime(this, -15)" class="px-2 py-1 bg-slate-100 dark:bg-slate-600 rounded-lg text-sm font-bold">−</button>
+        <input type="time" name="${f.name}" value="${val || ''}" ${req} class="flex-1 px-2 py-2 text-center text-sm font-bold rounded-xl border border-slate-300 dark:border-slate-600 dark:bg-slate-700 dark:text-white outline-none">
+        <button type="button" onclick="adjustTime(this, 15)" class="px-2 py-1 bg-slate-100 dark:bg-slate-600 rounded-lg text-sm font-bold">+</button>
+        <button type="button" onclick="setTimeNow(this)" class="px-2 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-xs font-bold">${t('now_btn')}</button>
+      </div>`;
+    } else if (f.type === 'textarea') input = `<textarea name="${f.name}" rows="2" class="${base}">${val}</textarea>`;
+    else input = `<input type="${f.type}" name="${f.name}" value="${val}" ${req} ${ph} ${min} class="${base}">`;
+    return `<div><label class="block text-xs font-semibold mb-1">${label}</label>${input}</div>`;
+  }).join('');
+}
+function isDuplicate(record, currentId) {
+  if (state.activeSubTab === 'rents') {
+    return state.rents.some(r => r.id !== currentId && r.workshopId === state.activeWorkshop && r.month === record.month && String(r.year) === String(record.year));
+  }
+  if (state.activeSubTab === 'attendance') {
+    return state.attendance.some(a => a.id !== currentId && a.workerName === record.workerName && a.date === record.date);
+  }
+  return false;
+}
+function handleFormSubmit(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const id = $('entry-id').value;
+  const category = state.activeSubTab;
+  const record = { id: id || Date.now().toString(), workshopId: state.activeWorkshop };
+  for (const [k, v] of formData.entries()) record[k] = v;
+  if (isDuplicate(record, id)) {
+    toast(category === 'rents' ? t('duplicate_rent') : t('attendance_duplicate'), 'bg-rose-600');
+    return;
+  }
+  if (id) {
+    const idx = state[category].findIndex(x => x.id === id);
+    if (idx !== -1) state[category][idx] = record;
+    toast(t('updated'));
+  } else { state[category].push(record); toast(t('added')); }
+  closeDataModal(); renderApp();
+  if (state.activePage === 'attendance') renderAttendanceList();
+}
+
+/* ============ ATTENDANCE ============ */
+function getFilteredAttendance() {
+  const w = ($('attendance-worker-filter')?.value || '').trim().toLowerCase();
+  const from = $('attendance-date-from')?.value || '';
+  const to = $('attendance-date-to')?.value || '';
+  return state.attendance.filter(a => {
+    if (w && !(a.workerName || '').toLowerCase().includes(w)) return false;
+    if (from && a.date < from) return false;
+    if (to && a.date > to) return false;
+    return true;
+  });
+}
+function toggleSelectAll() {
+  const rows = getFilteredAttendance();
+  const allSelected = rows.length > 0 && rows.every(r => selectedAttendance.has(r.id));
+  if (allSelected) rows.forEach(r => selectedAttendance.delete(r.id));
+  else rows.forEach(r => selectedAttendance.add(r.id));
+  renderAttendanceList();
+}
+function clearSelection() { selectedAttendance.clear(); renderAttendanceList(); }
+function toggleRowSelection(id) {
+  if (selectedAttendance.has(id)) selectedAttendance.delete(id); else selectedAttendance.add(id);
+  renderAttendanceList();
+}
+function updateSelectionCount() {
+  const count = selectedAttendance.size;
+  const el = $('selection-count');
+  if (el) el.textContent = count > 0 ? (currentLang === 'ar' ? `${count} سجل محدد` : `${count} selected`) : (currentLang === 'ar' ? 'لم يتم تحديد أي سجل' : 'No records selected');
+  const cb = $('select-all-checkbox');
+  if (cb) {
+    const rows = getFilteredAttendance();
+    cb.checked = rows.length > 0 && rows.every(r => selectedAttendance.has(r.id));
+  }
+}
+function clearAttendanceFilters() {
+  if ($('attendance-worker-filter')) $('attendance-worker-filter').value = '';
+  if ($('attendance-date-from')) $('attendance-date-from').value = '';
+  if ($('attendance-date-to')) $('attendance-date-to').value = '';
+  renderAttendanceList();
+}
+function renderAttendanceList() {
+  const tbody = $('attendance-table-body'); if (!tbody) return;
+  const rows = getFilteredAttendance();
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-slate-400 text-xs">${t('no_results')}</td></tr>`;
+  } else {
+    const statusColors = {
+      [I18N[currentLang].attendance_status[0]]: 'bg-emerald-50 text-emerald-600',
+      [I18N[currentLang].attendance_status[1]]: 'bg-rose-50 text-rose-600',
+      [I18N[currentLang].attendance_status[2]]: 'bg-blue-50 text-blue-600',
+      [I18N[currentLang].attendance_status[3]]: 'bg-amber-50 text-amber-600'
+    };
+    tbody.innerHTML = rows.slice().reverse().map(r => {
+      let hours = '—';
+      if (r.checkIn && r.checkOut) {
+        const [h1, m1] = r.checkIn.split(':').map(Number);
+        const [h2, m2] = r.checkOut.split(':').map(Number);
+        let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+        if (mins < 0) mins += 24 * 60;
+        hours = (mins / 60).toFixed(1) + ' ' + (currentLang === 'ar' ? 'س' : 'h');
+      }
+      const isChecked = selectedAttendance.has(r.id);
+      return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-700/30 ${isChecked ? 'bg-blue-50 dark:bg-blue-900/20' : ''}">
+        <td class="p-2 text-center"><input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleRowSelection('${r.id}')" class="w-4 h-4 accent-brand-600 cursor-pointer"></td>
+        <td class="p-2 font-bold">${r.workerName || '-'}</td>
+        <td class="p-2 text-slate-500 font-mono text-[10px]">${r.iqamaNumber || '-'}</td>
+        <td class="p-2 text-slate-500">${r.date || '-'}</td>
+        <td class="p-2 text-emerald-600 font-semibold">${r.checkIn || '-'}</td>
+        <td class="p-2 text-rose-600 font-semibold">${r.checkOut || '-'}</td>
+        <td class="p-2 font-bold">${hours}</td>
+        <td class="p-2"><span class="px-1.5 py-1 ${statusColors[r.status] || 'bg-slate-100 text-slate-600'} rounded-lg text-[9px] font-bold">${r.status || '-'}</span></td>
+        <td class="p-2 text-center flex justify-center gap-1">
+          <button onclick="editEntry('attendance','${r.id}')" class="p-1 text-blue-600 hover:bg-blue-50 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+          <button onclick="deleteEntry('attendance','${r.id}')" class="p-1 text-rose-600 hover:bg-rose-50 rounded"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+  updateSelectionCount();
+  renderAttendanceSummary();
+}
+function renderAttendanceSummary() {
+  const today = new Date().toISOString().split('T')[0];
+  const records = state.attendance.filter(a => a.date === today);
+  const presentStatus = I18N[currentLang].attendance_status[0];
+  const absentStatus = I18N[currentLang].attendance_status[1];
+  const present = records.filter(r => r.status === presentStatus).length;
+  const absent = records.filter(r => r.status === absentStatus).length;
+  let totalHours = 0;
+  records.forEach(r => {
+    if (r.checkIn && r.checkOut) {
+      const [h1, m1] = r.checkIn.split(':').map(Number);
+      const [h2, m2] = r.checkOut.split(':').map(Number);
+      let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+      if (mins < 0) mins += 24 * 60;
+      totalHours += mins / 60;
+    }
+  });
+  if ($('attendance-today-present')) $('attendance-today-present').textContent = present;
+  if ($('attendance-today-absent')) $('attendance-today-absent').textContent = absent;
+  if ($('attendance-today-hours')) $('attendance-today-hours').textContent = totalHours.toFixed(1);
+}
+function addAttendanceRecord() { state.activeSubTab = 'attendance'; openAddModal(); }
+function quickCheckIn() {
+  state.activeSubTab = 'attendance';
+  const now = new Date();
+  const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  openAddModal();
+  setTimeout(() => {
+    const ci = document.querySelector('#form-fields-container [name="checkIn"]');
+    if (ci) ci.value = timeStr;
+  }, 100);
+  haptic('success');
+}
+function quickCheckOut() {
+  const now = new Date();
+  const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  const today = now.toISOString().split('T')[0];
+  const todayRecords = state.attendance.filter(a => a.date === today && !a.checkOut);
+  if (!todayRecords.length) { toast(currentLang === 'ar' ? 'لا يوجد حضور مسجل اليوم للانصراف' : 'No check-in records today', 'bg-amber-600'); return; }
+  const last = todayRecords[todayRecords.length - 1];
+  last.checkOut = timeStr;
+  renderApp(); saveState();
+  if (state.activePage === 'attendance') renderAttendanceList();
+  toast(currentLang === 'ar' ? `تم تسجيل انصراف: ${last.workerName}` : `Checked out: ${last.workerName}`, 'bg-emerald-600');
+}
+function printSelectedAttendance() {
+  if (!selectedAttendance.size) { toast(currentLang === 'ar' ? 'لم يتم تحديد أي سجل' : 'No records selected', 'bg-amber-600'); return; }
+  const rows = state.attendance.filter(a => selectedAttendance.has(a.id));
+  printAttendanceRows(rows, currentLang === 'ar' ? 'سجل حضور وانصراف محدد' : 'Selected Attendance Records');
+}
+function printAllAttendance() {
+  const rows = getFilteredAttendance();
+  if (!rows.length) { toast(t('no_results'), 'bg-amber-600'); return; }
+  printAttendanceRows(rows, currentLang === 'ar' ? 'سجل الحضور والانصراف' : 'Attendance Log');
+}
+function printAttendanceRows(rows, title) {
+  const win = window.open('', '_blank');
+  const html = `<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="UTF-8"><title>${title}</title>
+  <style>body{font-family:Arial,sans-serif;padding:20px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #ccc;padding:6px;text-align:right}th{background:#f0f0f0}h1{font-size:16px;text-align:center;margin-bottom:16px}</style></head><body>
+  <h1>${title} - ورشة هادي ناصر آل مستنير للسيارات</h1>
+  <table><thead><tr><th>#</th><th>اسم العامل</th><th>السجل المدني</th><th>التاريخ</th><th>حضور</th><th>انصراف</th><th>ساعات</th><th>الحالة</th></tr></thead><tbody>
+  ${rows.map((r, i) => {
+    let hrs = '-';
+    if (r.checkIn && r.checkOut) {
+      const [h1, m1] = r.checkIn.split(':').map(Number);
+      const [h2, m2] = r.checkOut.split(':').map(Number);
+      let mins = (h2 * 60 + m2) - (h1 * 60 + m1);
+      if (mins < 0) mins += 24 * 60;
+      hrs = (mins / 60).toFixed(1);
+    }
+    return `<tr><td>${i + 1}</td><td>${r.workerName || '-'}</td><td>${r.iqamaNumber || '-'}</td><td>${r.date || '-'}</td><td>${r.checkIn || '-'}</td><td>${r.checkOut || '-'}</td><td>${hrs}</td><td>${r.status || '-'}</td></tr>`;
+  }).join('')}
+  </tbody></table></body></html>`;
+  win.document.write(html); win.document.close();
+  setTimeout(() => win.print(), 400);
+}
+
+/* ============ USERS ============ */
+function renderUsersList() {
+  const container = $('users-list-container'); if (!container) return;
+  container.innerHTML = state.users.map(u => `
+    <div class="flex items-center gap-2 p-2 bg-slate-50 dark:bg-slate-700/30 rounded-xl">
+      <div class="w-9 h-9 bg-brand-100 rounded-full flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-xs font-bold truncate">${u.name} ${u.primary ? `<span class="text-[9px] bg-brand-600 text-white px-1.5 py-0.5 rounded">${t('primary_badge')}</span>` : ''}</div>
+        <div class="text-[10px] text-slate-500">${u.role === 'owner' ? t('owner_role') : t('accountant_role')}</div>
+      </div>
+      <button onclick="togglePinVisibility('${u.id}')" class="p-1.5 text-slate-500 hover:text-brand-600 rounded-lg" title="عرض الرمز">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+      </button>
+      ${!u.primary ? `<button onclick="handleDeleteUser('${u.id}')" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>` : ''}
+    </div>
+  `).join('');
+  if ($('users-count-label')) $('users-count-label').textContent = `${state.users.length} ${t('users_count')}`;
+}
+function handleAddUser(e) {
+  e.preventDefault();
+  const name = $('new-user-name').value.trim();
+  const pin = $('new-user-pin').value;
+  const role = $('new-user-role').value;
+  if (!/^\d{4,6}$/.test(pin)) { toast(t('pin_invalid'), 'bg-rose-600'); return; }
+  state.users.push({ id: Date.now().toString(), name, pin, role });
+  saveState(); renderUsersList(); populateLoginUsers();
+  e.target.reset();
+  toast(t('user_added'));
+}
+async function handleDeleteUser(id) {
+  const user = state.users.find(u => u.id === id);
+  if (!user || user.primary) { toast(t('cannot_delete_primary'), 'bg-rose-600'); return; }
+  if (user.role === 'owner' && state.users.filter(u => u.role === 'owner').length <= 1) { toast(t('cannot_delete_last_owner'), 'bg-rose-600'); return; }
+  if (!await confirmDialog(t('delete_user_confirm'))) return;
+  state.users = state.users.filter(u => u.id !== id);
+  saveState(); renderUsersList(); populateLoginUsers();
+  toast(t('user_deleted'));
+}
+function togglePinVisibility(id) {
+  const user = state.users.find(u => u.id === id);
+  if (user) toast(`${user.name}: ${user.pin}`, 'bg-slate-700');
+}
+
+/* ============ WORKSHOPS MANAGEMENT ============ */
+function getWorkshopRecordCounts(id) {
+  return {
+    expenses: state.expenses.filter(x => x.workshopId === id).length,
+    deposits: state.deposits.filter(x => x.workshopId === id).length,
+    rents: state.rents.filter(x => x.workshopId === id).length,
+    fines: state.fines.filter(x => x.workshopId === id).length
+  };
+}
+function renderWorkshopsList() {
+  const container = $('workshops-list-container');
+  if (!container) return;
+  const search = ($('workshop-search')?.value || '').trim().toLowerCase();
+  const filtered = WORKSHOPS.filter(w =>
+    !search || w.nameAr.toLowerCase().includes(search) || (w.nameEn || '').toLowerCase().includes(search)
+  );
+  if ($('workshops-count-label')) {
+    $('workshops-count-label').textContent = `${WORKSHOPS.length} ${currentLang === 'ar' ? 'قسم مسجل' : 'registered sections'}`;
+  }
+  if (!filtered.length) {
+    container.innerHTML = `
+      <div class="p-8 text-center">
+        <svg class="w-16 h-16 text-slate-300 dark:text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5"/></svg>
+        <p class="text-sm text-slate-500 font-semibold">${t('no_results')}</p>
+        <button onclick="openWorkshopModal()" class="mt-3 px-4 py-2 bg-brand-600 text-white rounded-xl text-xs font-bold">+ ${currentLang === 'ar' ? 'إضافة قسم جديد' : 'Add new section'}</button>
+      </div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(w => {
+    const c = getWorkshopRecordCounts(w.id);
+    const total = c.expenses + c.deposits + c.rents + c.fines;
+    const isActive = w.id === state.activeWorkshop;
+    const badge = isActive ? `<span class="text-[9px] bg-emerald-600 text-white px-1.5 py-0.5 rounded">${currentLang === 'ar' ? 'الحالي' : 'Current'}</span>` : '';
+    return `
+      <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brand-300 transition">
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+          <div class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-xl flex items-center justify-center flex-shrink-0 text-white font-black text-sm shadow-md">
+            ${w.nameAr.charAt(0)}
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-sm font-bold truncate">${w.nameAr}</span>
+              ${badge}
+            </div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">${w.nameEn || '—'}</div>
+            <div class="flex flex-wrap gap-1.5 mt-1 text-[9px]">
+              <span class="px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded font-bold">${c.expenses} ${currentLang === 'ar' ? 'مصروف' : 'exp'}</span>
+              <span class="px-1.5 py-0.5 bg-emerald-100 text-emerald-700 rounded font-bold">${c.deposits} ${currentLang === 'ar' ? 'إيداع' : 'dep'}</span>
+              <span class="px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded font-bold">${c.rents} ${currentLang === 'ar' ? 'إيجار' : 'rent'}</span>
+              <span class="px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded font-bold">${c.fines} ${currentLang === 'ar' ? 'غرامة' : 'fine'}</span>
+              <span class="px-1.5 py-0.5 bg-slate-200 text-slate-700 rounded font-bold">${total} ${currentLang === 'ar' ? 'إجمالي' : 'total'}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-1 flex-shrink-0 self-end sm:self-center">
+          <button onclick="switchWorkshopAndGo('${w.id}')" class="p-2 text-brand-600 hover:bg-brand-50 rounded-lg" title="فتح">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+          </button>
+          <button onclick="openWorkshopModal('${w.id}')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg" title="تعديل">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button onclick="handleDeleteWorkshop('${w.id}')" class="p-2 text-rose-600 hover:bg-rose-50 rounded-lg" title="حذف">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </div>`;
+  }).join('');
+}
+function openWorkshopModal(id = null) {
+  $('workshop-edit-id').value = id || '';
+  const hint = $('workshop-modal-hint');
+  if (id) {
+    const w = WORKSHOPS.find(x => x.id === id); if (!w) return;
+    $('workshop-modal-title').textContent = currentLang === 'ar' ? 'تعديل القسم' : 'Edit Section';
+    $('workshop-name-ar').value = w.nameAr;
+    $('workshop-name-en').value = w.nameEn || '';
+    hint.innerHTML = `💡 ${currentLang === 'ar' ? 'تعديل الاسم لا يؤثر على السجلات المرتبطة بهذا القسم.' : 'Renaming does not affect the linked records.'}`;
+  } else {
+    $('workshop-modal-title').textContent = currentLang === 'ar' ? 'إضافة قسم جديد' : 'Add New Section';
+    $('workshop-name-ar').value = '';
+    $('workshop-name-en').value = '';
+    hint.innerHTML = `💡 ${currentLang === 'ar' ? 'سيظهر هذا القسم في التبويبات أعلى صفحة المالية وصفحة المقارنة.' : 'This section will appear in tabs above the finance page and in comparison.'}`;
+  }
+  $('workshop-modal').classList.remove('hidden');
+  setTimeout(() => $('workshop-name-ar')?.focus(), 100);
+}
+function closeWorkshopModal() {
+  $('workshop-modal').classList.add('hidden');
+  $('workshop-form').reset();
+  $('workshop-edit-id').value = '';
+}
+function handleWorkshopSubmit(e) {
+  e.preventDefault();
+  const editId = $('workshop-edit-id').value;
+  const nameAr = $('workshop-name-ar').value.trim();
+  const nameEn = $('workshop-name-en').value.trim() || nameAr;
+  if (!nameAr) { toast(currentLang === 'ar' ? 'اسم القسم مطلوب' : 'Name required', 'bg-rose-600'); return; }
+  const duplicate = WORKSHOPS.find(w => w.id !== editId && (w.nameAr === nameAr || w.nameEn === nameEn));
+  if (duplicate) { toast(currentLang === 'ar' ? 'يوجد قسم بنفس الاسم' : 'Duplicate name', 'bg-rose-600'); return; }
+  if (editId) {
+    const idx = WORKSHOPS.findIndex(x => x.id === editId);
+    if (idx !== -1) {
+      WORKSHOPS[idx].nameAr = nameAr;
+      WORKSHOPS[idx].nameEn = nameEn;
+      WORKSHOPS[idx].name = currentLang === 'ar' ? nameAr : nameEn;
+    }
+    toast(t('updated'));
+  } else {
+    const newId = 'ws_' + Date.now().toString(36);
+    WORKSHOPS.push({ id: newId, nameAr, nameEn, name: currentLang === 'ar' ? nameAr : nameEn });
+    toast(t('added'));
+  }
+  saveWorkshops();
+  closeWorkshopModal();
+  renderWorkshopsList();
+  initWorkshopTabs();
+  haptic('success');
+}
+async function handleDeleteWorkshop(id) {
+  const w = WORKSHOPS.find(x => x.id === id); if (!w) return;
+  if (WORKSHOPS.length <= 1) { toast(currentLang === 'ar' ? 'لا يمكن حذف آخر قسم' : 'Cannot delete the last section', 'bg-rose-600'); return; }
+  const c = getWorkshopRecordCounts(id);
+  const total = c.expenses + c.deposits + c.rents + c.fines;
+  let msg = currentLang === 'ar' ? `هل أنت متأكد من حذف قسم "${w.nameAr}"؟` : `Delete section "${w.nameEn}"?`;
+  if (total > 0) {
+    msg += currentLang === 'ar'
+      ? `\n\n⚠️ يحتوي هذا القسم على ${total} سجل:\n• ${c.expenses} مصروف\n• ${c.deposits} إيداع\n• ${c.rents} إيجار\n• ${c.fines} غرامة\n\nسيتم حذف جميع هذه السجلات نهائياً.`
+      : `\n\n⚠️ This section has ${total} records that will be deleted permanently.`;
+  }
+  if (!await confirmDialog(msg)) return;
+  WORKSHOPS = WORKSHOPS.filter(x => x.id !== id);
+  saveWorkshops();
+  state.expenses = state.expenses.filter(x => x.workshopId !== id);
+  state.deposits = state.deposits.filter(x => x.workshopId !== id);
+  state.rents = state.rents.filter(x => x.workshopId !== id);
+  state.fines = state.fines.filter(x => x.workshopId !== id);
+  if (state.activeWorkshop === id) {
+    state.activeWorkshop = WORKSHOPS[0].id;
+    if (state.currentUser) localStorage.setItem(`lastWs_${state.currentUser.id}`, state.activeWorkshop);
+  }
+  saveState();
+  renderWorkshopsList();
+  initWorkshopTabs();
+  renderApp();
+  switchWorkshop(state.activeWorkshop);
+  toast(t('deleted'));
+  haptic('success');
+}
+function switchWorkshopAndGo(id) {
+  switchWorkshop(id);
+  switchPage('expenses');
+}
+
+/* ============ BACKUP ============ */
+function exportJSONBackup() {
+  const backup = {
+    workshops: WORKSHOPS.map(w => ({ id: w.id, nameAr: w.nameAr, nameEn: w.nameEn })),
+    users: state.users, expenses: state.expenses, deposits: state.deposits,
+    rents: state.rents, fines: state.fines, attendance: state.attendance,
+    exported: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `backup_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  toast(t('backup_exported'));
+}
+function importJSONBackup(event) {
+  const file = event.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.workshops) {
+        WORKSHOPS = data.workshops.map(w => ({ ...w, name: currentLang === 'ar' ? w.nameAr : (w.nameEn || w.nameAr) }));
+        saveWorkshops();
+      }
+      if (data.users) state.users = data.users;
+      if (data.expenses) state.expenses = data.expenses;
+      if (data.deposits) state.deposits = data.deposits;
+      if (data.rents) state.rents = data.rents;
+      if (data.fines) state.fines = data.fines;
+      if (data.attendance) state.attendance = data.attendance;
+      if (!WORKSHOPS.find(w => w.id === state.activeWorkshop) && WORKSHOPS.length) {
+        state.activeWorkshop = WORKSHOPS[0].id;
+      }
+      saveState(); renderApp(); populateLoginUsers(); initWorkshopTabs();
+      toast(t('backup_imported'));
+    } catch (e) { toast(t('file_error'), 'bg-rose-600'); }
+  };
+  reader.readAsText(file);
+}
+async function resetSystemData() {
+  if (!await confirmDialog(t('reset_confirm'))) return;
+  state.expenses = []; state.deposits = []; state.rents = []; state.fines = []; state.attendance = [];
+  saveState(); renderApp();
+  toast(t('deleted'));
+}
+
+/* ============ EXPORT ============ */
+function exportToCSV() {
+  const category = state.activeSubTab;
+  const cols = COLUMNS[category];
+  const rows = state[category].filter(x => x.workshopId === state.activeWorkshop);
+  if (!rows.length) { toast(t('no_results'), 'bg-amber-600'); return; }
+  const header = cols.map(c => t(c.labelKey)).join(',');
+  const body = rows.map(r => cols.map(c => `"${(r[c.key] ?? '').toString().replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + header + '\n' + body], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${category}_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  toast(t('csv_exported'));
+}
+function exportToPDF() {
+  toast(t('pdf_creating'));
+  const el = document.querySelector('#page-expenses .bg-white');
+  if (typeof html2pdf === 'undefined' || !el) { window.print(); return; }
+  html2pdf().from(el).set({ margin: 10, filename: `${state.activeSubTab}_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' } }).save()
+    .then(() => toast(t('pdf_created'))).catch(() => toast(t('pdf_failed'), 'bg-rose-600'));
+}
+function exportAllWorkshopsPDF() {
+  toast(t('pdf_all_creating'));
+  const container = document.createElement('div');
+  container.dir = 'rtl';
+  container.style.cssText = 'padding:20px;font-family:Cairo,Arial,sans-serif;background:#fff;color:#000';
+  let html = `<div style="text-align:center;margin-bottom:20px"><h1 style="font-size:20px">تقرير شامل - ورشة هادي ناصر آل مستنير</h1><p style="font-size:12px;color:#666">${new Date().toLocaleDateString('ar-SA')}</p></div>`;
+  WORKSHOPS.forEach(w => {
+    const st = getWorkshopTotals(w.id);
+    html += `<div style="margin-bottom:20px;page-break-inside:avoid"><h2 style="font-size:14px;background:#16a34a;color:#fff;padding:6px">${w.nameAr}</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:12px"><tr><td style="border:1px solid #ccc;padding:4px">المصروفات: ${fmtMoney(st.exp)}</td><td style="border:1px solid #ccc;padding:4px">الإيداعات: ${fmtMoney(st.dep)}</td></tr><tr><td style="border:1px solid #ccc;padding:4px">الإيجارات: ${fmtMoney(st.rnt)}</td><td style="border:1px solid #ccc;padding:4px">الغرامات: ${fmtMoney(st.fns)}</td></tr><tr><td colspan="2" style="border:1px solid #ccc;padding:4px;font-weight:bold">الصافي: ${fmtMoney(st.net)}</td></tr></table></div>`;
+  });
+  container.innerHTML = html;
+  if (typeof html2pdf === 'undefined') { window.print(); return; }
+  html2pdf().from(container).set({ margin: 10, filename: `all_workshops_${Date.now()}.pdf`, image: { type: 'jpeg', quality: 0.95 }, html2canvas: { scale: 2 } }).save()
+    .then(() => toast(t('pdf_all_created'))).catch(() => toast(t('pdf_failed'), 'bg-rose-600'));
+}
+function printVoucher(id) {
+  const item = state.deposits.find(x => x.id === id); if (!item) return;
+  $('print-voucher-type').textContent = item.voucherType || 'سند';
+  $('print-voucher-content').innerHTML = `
+    <div class="flex justify-between border-b border-slate-100 pb-2"><span class="font-bold">المستفيد:</span><span>${item.payee}</span></div>
+    <div class="flex justify-between border-b border-slate-100 pb-2"><span class="font-bold">المبلغ:</span><span class="font-bold text-emerald-600">${fmtMoney(item.amount)}</span></div>
+    <div class="flex justify-between border-b border-slate-100 pb-2"><span class="font-bold">التاريخ:</span><span>${item.date}</span></div>
+    <div class="flex justify-between border-b border-slate-100 pb-2"><span class="font-bold">القسم:</span><span>${getWorkshopName(item.workshopId)}</span></div>
+    ${item.notes ? `<div class="flex justify-between"><span class="font-bold">ملاحظات:</span><span>${item.notes}</span></div>` : ''}
+  `;
+  $('print-voucher-modal').classList.remove('hidden');
+}
+function closePrintVoucherModal() { $('print-voucher-modal').classList.add('hidden'); }
+
+/* ============ OWNER DASHBOARD ============ */
+function openDashboardFull() {
+  $('dashboard-modal').classList.remove('hidden');
+  document.querySelectorAll('.dash-period-btn').forEach(b => {
+    b.classList.toggle('bg-brand-600', b.dataset.period === dashPeriod);
+    b.classList.toggle('text-white', b.dataset.period === dashPeriod);
+    b.classList.toggle('text-slate-600', b.dataset.period !== dashPeriod);
+  });
+  renderDashboard();
+}
+function closeDashboard() { $('dashboard-modal').classList.add('hidden'); }
+function setDashPeriod(p) {
+  dashPeriod = p;
+  $('dash-custom-range').classList.toggle('hidden', p !== 'custom');
+  $('dash-custom-range').classList.toggle('flex', p === 'custom');
+  document.querySelectorAll('.dash-period-btn').forEach(b => {
+    b.classList.toggle('bg-brand-600', b.dataset.period === p);
+    b.classList.toggle('text-white', b.dataset.period === p);
+    b.classList.toggle('text-slate-600', b.dataset.period !== p);
+  });
+  renderDashboard();
+}
+function getDashboardRange() {
+  const now = new Date();
+  let from = '', to = '';
+  if (dashPeriod === 'month') { from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0]; to = now.toISOString().split('T')[0]; }
+  else if (dashPeriod === 'quarter') { from = new Date(now.getFullYear(), now.getMonth() - 2, 1).toISOString().split('T')[0]; to = now.toISOString().split('T')[0]; }
+  else if (dashPeriod === 'year') { from = new Date(now.getFullYear(), 0, 1).toISOString().split('T')[0]; to = now.toISOString().split('T')[0]; }
+  else if (dashPeriod === 'custom') { from = $('dash-from').value; to = $('dash-to').value; }
+  return { from, to };
+}
+function renderDashboard() {
+  const { from, to } = getDashboardRange();
+  const inRange = item => !item.date || ((!from || item.date >= from) && (!to || item.date <= to));
+  const rows = WORKSHOPS.map(w => {
+    const exp = state.expenses.filter(x => x.workshopId === w.id && inRange(x)).reduce((s, i) => s + Number(i.amount || 0), 0);
+    const dep = state.deposits.filter(x => x.workshopId === w.id && inRange(x)).reduce((s, i) => s + Number(i.amount || 0), 0);
+    const rnt = state.rents.filter(x => x.workshopId === w.id && inRange(x)).reduce((s, i) => s + Number(i.paidAmount || 0), 0);
+    const fns = state.fines.filter(x => x.workshopId === w.id && inRange(x)).reduce((s, i) => s + Number(i.amount || 0), 0);
+    return { id: w.id, name: getWorkshopName(w.id), exp, dep, rnt, fns, net: (dep + rnt) - exp - fns, records: [exp, dep, rnt, fns].filter(x => x > 0).length };
+  });
+  const totalRev = rows.reduce((s, r) => s + r.dep + r.rnt, 0);
+  const totalExp = rows.reduce((s, r) => s + r.exp + r.fns, 0);
+  const totalRec = rows.reduce((s, r) => s + r.records, 0);
+  if ($('dash-total-revenue')) $('dash-total-revenue').textContent = fmtMoney(totalRev);
+  if ($('dash-total-expense')) $('dash-total-expense').textContent = fmtMoney(totalExp);
+  if ($('dash-total-records')) $('dash-total-records').textContent = totalRec;
+  if ($('dash-net')) $('dash-net').textContent = fmtMoney(totalRev - totalExp);
+  const canvas = $('dashboard-chart');
+  if (canvas && typeof Chart !== 'undefined') {
+    if (dashboardChart) dashboardChart.destroy();
+    const isDark = document.documentElement.classList.contains('dark');
+    dashboardChart = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels: rows.map(r => r.name), datasets: [
+        { label: t('dash_revenue'), data: rows.map(r => r.dep + r.rnt), backgroundColor: 'rgba(16,185,129,.7)', borderRadius: 6 },
+        { label: t('dash_expense'), data: rows.map(r => r.exp + r.fns), backgroundColor: 'rgba(244,63,94,.7)', borderRadius: 6 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#cbd5e1' : '#475569', font: { family: 'Cairo' } } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#cbd5e1' : '#475569' }, grid: { color: isDark ? '#334155' : '#e2e8f0' } }, x: { ticks: { color: isDark ? '#cbd5e1' : '#475569' }, grid: { display: false } } } }
+    });
+  }
+  const ranking = [...rows].sort((a, b) => b.net - a.net);
+  if ($('dashboard-ranking-body')) {
+    $('dashboard-ranking-body').innerHTML = ranking.map((r, i) => `<tr><td class="p-2 font-bold">${i + 1}</td><td class="p-2">${r.name}</td><td class="p-2 text-emerald-600">${fmtMoney(r.dep + r.rnt)}</td><td class="p-2 text-rose-600">${fmtMoney(r.exp + r.fns)}</td><td class="p-2 text-orange-600">${fmtMoney(r.fns)}</td><td class="p-2 font-bold ${r.net >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${fmtMoney(r.net)}</td></tr>`).join('');
+  }
+}
+
+/* ============ COMPARE ============ */
+function openCompare() {
+  if (!$('compare-ws-a').options.length) {
+    const opts = WORKSHOPS.map(w => `<option value="${w.id}">${w.name}">${w.name}</option>`).join('');
+    $('compare-ws-a').innerHTML = opts; $('compare-ws-b').innerHTML = opts;
+    $('compare-ws-a').value = WORKSHOPS[0]?.id || '';
+    $('compare-ws-b').value = WORKSHOPS[1]?.id || WORKSHOPS[0]?.id || '';
+  }
+  $('compare-modal').classList.remove('hidden');
+  renderCompare();
+}
+function closeCompare() { $('compare-modal').classList.add('hidden'); }
+function renderCompare() {
+  const a = $('compare-ws-a').value, b = $('compare-ws-b').value;
+  if (!a || !b || a === b) return;
+  const A = getWorkshopTotals(a), B = getWorkshopTotals(b);
+  const canvas = $('compare-chart');
+  if (canvas && typeof Chart !== 'undefined') {
+    if (compareChart) compareChart.destroy();
+    const isDark = document.documentElement.classList.contains('dark');
+    compareChart = new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels: [t('dash_expense'), t('dash_revenue'), t('stat_fines'), t('dash_net')], datasets: [
+        { label: getWorkshopName(a), data: [A.exp, A.dep + A.rnt, A.fns, A.net], backgroundColor: 'rgba(59,130,246,.7)', borderRadius: 6 },
+        { label: getWorkshopName(b), data: [B.exp, B.dep + B.rnt, B.fns, B.net], backgroundColor: 'rgba(249,115,22,.7)', borderRadius: 6 }
+      ]},
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: isDark ? '#cbd5e1' : '#475569', font: { family: 'Cairo' } } } }, scales: { y: { beginAtZero: true, ticks: { color: isDark ? '#cbd5e1' : '#475569' }, grid: { color: isDark ? '#334155' : '#e2e8f0' } } } }
+    });
+  }
+  const result = $('compare-result');
+  if (result) {
+    const winner = A.net > B.net ? getWorkshopName(a) : getWorkshopName(b);
+    result.innerHTML = `<div class="p-3 bg-brand-50 dark:bg-brand-900/30 rounded-xl col-span-2 text-center"><div class="text-xs text-slate-600 dark:text-slate-300">${currentLang === 'ar' ? 'الأداء الأفضل' : 'Best Performer'}</div><div class="text-sm font-black text-brand-700 dark:text-brand-300 mt-1">🏆 ${winner}</div></div>`;
+  }
+}
+
+/* ============ PWA / ANDROID ============ */
+(function inlineManifest() {
+  const manifest = {
+    name: 'ورشة هادي ناصر آل مستنير للسيارات',
+    short_name: 'ورشة هادي',
+    start_url: './',
+    scope: './',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#0f172a',
+    theme_color: '#16a34a',
+    lang: 'ar',
+    dir: 'rtl',
+    icons: []
+  };
+  try {
+    const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const link = $('manifest-link');
+    if (link) link.href = URL.createObjectURL(blob);
+  } catch (e) {}
+})();
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (!localStorage.getItem('installDismissed')) {
+    setTimeout(() => $('install-app-banner')?.classList.add('show'), 3000);
+  }
+});
+function installApp() {
+  if (!deferredPrompt) { toast(currentLang === 'ar' ? 'التثبيت غير متاح — استخدم قائمة المتصفح' : 'Install not available', 'bg-amber-600'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') { $('install-app-banner')?.classList.remove('show'); toast(currentLang === 'ar' ? '✅ تم التثبيت' : '✅ Installed', 'bg-emerald-600'); }
+    deferredPrompt = null;
+  });
+}
+function dismissInstall() { $('install-app-banner')?.classList.remove('show'); localStorage.setItem('installDismissed', '1'); }
+window.addEventListener('appinstalled', () => { $('install-app-banner')?.classList.remove('show'); });
+
+function updateOnline() { $('offline-banner')?.classList.toggle('show', !navigator.onLine); }
+window.addEventListener('online', () => { updateOnline(); toast('✅ ' + (currentLang === 'ar' ? 'تم استعادة الاتصال' : 'Reconnected'), 'bg-emerald-600'); });
+window.addEventListener('offline', () => { updateOnline(); toast('⚠️ ' + (currentLang === 'ar' ? 'انقطع الاتصال' : 'Offline'), 'bg-amber-600'); });
+updateOnline();
+
+function fabAction(action) {
+  if (action === 'add') {
+    if (!state.currentUser) { toast(currentLang === 'ar' ? 'سجّل الدخول أولاً' : 'Login first', 'bg-rose-600'); return; }
+    openAddModal();
+  } else if (action === 'attendance') {
+    switchPage('attendance');
+  } else if (action === 'share') {
+    shareSummary();
+  }
+}
+async function shareSummary() {
+  const st = getWorkshopTotals(state.activeWorkshop);
+  const name = getWorkshopName(state.activeWorkshop);
+  const text = `📊 ${name}\n━━━━━━━━━━━━\n💰 ${t('stat_deposits')}: ${fmtMoney(st.dep)}\n💸 ${t('stat_expenses')}: ${fmtMoney(st.exp)}\n🏠 ${t('stat_rents')}: ${fmtMoney(st.rnt)}\n⚠️ ${t('stat_fines')}: ${fmtMoney(st.fns)}\n━━━━━━━━━━━━\n📈 ${t('stat_net')}: ${fmtMoney(st.net)}`;
+  if (navigator.share) { try { await navigator.share({ title: name, text }); } catch (e) {} }
+  else { window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank'); }
+}
+
+let _pullStart = 0, _pullActive = false;
+document.addEventListener('touchstart', e => { if (window.scrollY === 0) { _pullStart = e.touches[0].clientY; _pullActive = true; } }, { passive: true });
+document.addEventListener('touchmove', e => {
+  if (!_pullActive) return;
+  const d = e.touches[0].clientY - _pullStart;
+  if (d > 120) { _pullActive = false; haptic('medium'); renderApp(); toast('🔄 ' + (currentLang === 'ar' ? 'تم التحديث' : 'Refreshed')); }
+}, { passive: true });
+document.addEventListener('touchend', () => { _pullActive = false; }, { passive: true });
+
+window.addEventListener('hashchange', () => {
+  const p = location.hash.replace('#', '');
+  if (['dashboard', 'expenses', 'attendance', 'settings'].includes(p) && state.currentUser) switchPage(p);
+});
+
+/* ============ INIT ============ */
+function init() {
+  if (!WORKSHOPS.find(w => w.id === state.activeWorkshop) && WORKSHOPS.length > 0) {
+    state.activeWorkshop = WORKSHOPS[0].id;
+  }
+  populateLoginUsers();
+  initWorkshopTabs();
+  const loginForm = $('login-form');
+  if (loginForm) loginForm.addEventListener('submit', handleLogin);
+  updateSidebarPosition();
+  if (location.hash) {
+    const p = location.hash.replace('#', '');
+    if (['dashboard', 'expenses', 'attendance', 'settings'].includes(p)) {
+      setTimeout(() => { if (state.currentUser) switchPage(p); }, 200);
+    }
+  }
+  console.log('✅ App initialized');
+}
+document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === 'complete' || document.readyState === 'interactive') { init(); }
+</script>
+</body>
+</html>
